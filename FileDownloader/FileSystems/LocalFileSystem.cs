@@ -3,50 +3,54 @@
 namespace FileDownloader.FileSystems
 {
     /// <summary>
-    /// 
+    /// Defines Local File System
     /// </summary>
     public class LocalFileSystem : IFileSystem
     {
         /// <summary>
-        /// 
+        /// Saves file on the file system
         /// </summary>
-        /// <param name="fileName"></param>
-        public void CreateFile(string fileName)
+        /// <param name="fileName">File name</param>
+        /// <param name="filePath">File path</param>
+        /// <returns>true, if file name successfuly saved</returns>
+        public bool SaveFile(string fileName, string filePath)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// 
+        /// Deletes file from file system
         /// </summary>
-        /// <param name="fileName"></param>
-        public void DeleteFile(string fileName)
+        /// <param name="fileName">File name</param>
+        /// <param name="filePath">File path</param>
+        public void DeleteFile(string fileName, string filePath)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// 
+        /// Checks if file already exists with that name
         /// </summary>
-        /// <returns></returns>
-        public bool FileNameExists()
+        /// <param name="fileName">File name</param>
+        /// <returns>true, if file name exists</returns>
+        public bool FileNameExists(string fileName)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// 
+        /// Generates new file name based on one which already exists on the file system
         /// </summary>
-        /// <returns></returns>
-        public string GenerateFileName()
+        /// <returns>New file name</returns>
+        public string GenerateFileName(string fileName)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// 
+        /// Checks disc memory capacity
         /// </summary>
-        /// <returns></returns>
+        /// <returns>true, if there is enough memory</returns>
         public bool HasEnoughMemory()
         {
             throw new NotImplementedException();

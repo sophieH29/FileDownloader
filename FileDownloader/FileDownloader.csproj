@@ -42,9 +42,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IDownloader.cs" />
-    <Compile Include="Interfaces\IFileSystem.cs" />
-    <Compile Include="Interfaces\IDownloaderManager.cs" />
+    <Compile Include="Factories\DownloadManagerFactory.cs" />
+    <Compile Include="Downloaders\FtpDownloader.cs" />
+    <Compile Include="Downloaders\HttpDownloader.cs" />
+    <Compile Include="Downloaders\SftpDownloader.cs" />
+    <Compile Include="Downloaders\IDownloader.cs" />
+    <Compile Include="FileSystems\AwsS3FileSystem.cs" />
+    <Compile Include="FileSystems\AzureBlobFileSystem.cs" />
+    <Compile Include="FileSystems\IFileSystem.cs" />
+    <Compile Include="FileSystems\LocalFileSystem.cs" />
+    <Compile Include="Managers\IDownloadManager.cs" />
+    <Compile Include="Managers\AlternateDownloadManager.cs" />
+    <Compile Include="Managers\SimpleDownloadManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -52,8 +61,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Factories\" />
-    <Folder Include="Managers\" />
+    <Folder Include="Tests\IntegrationTests\" />
+    <Folder Include="Tests\UnitTests\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

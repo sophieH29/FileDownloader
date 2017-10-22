@@ -1,26 +1,21 @@
-﻿using FileDownloader.Interfaces;
-
-namespace FileDownloader.Downloaders
+﻿namespace FileDownloader.Downloaders
 {
     /// <summary>
-    /// 
+    /// Responsible for downloading files based on FTP protocol
     /// </summary>
     public class FtpDownloader : IDownloader
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public string GetFilePart()
+        public string GetFilePart(string url)
         {
             throw new System.NotImplementedException();
         }
 
         /// <summary>
-        /// 
+        /// Checks if url is valid
         /// </summary>
-        /// <returns></returns>
-        public bool IsUrlValid()
+        /// <param name="url">url</param>
+        /// <returns>true, if valid</returns>
+        public bool IsUrlValid(string url)
         {
             throw new System.NotImplementedException();
         }
