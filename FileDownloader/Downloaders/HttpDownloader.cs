@@ -46,11 +46,14 @@ namespace FileDownloader.Downloaders
             throw new System.NotImplementedException();
         }
 
-        private void PrepareDownload(Uri url, string localfilename)
+        public void PrepareDownload(Uri url, Stream fileStream)
         {
             try
             {
-                
+                _fileStream = fileStream;
+                _fileStream.SetLength(Size);
+                CreateNetworkStream(false, url, BytesRead);
+
                 Status = DownloadStatusEnum.Prepared;
                 Console.WriteLine("Prepared download.");
             }
@@ -112,9 +115,12 @@ namespace FileDownloader.Downloaders
             }
         }
 
-        private void ResumeDownload()
+        private void ResumeDownload(Stream fileStream, Uri url)
         {
-           // CreateStreams(true);
+            _fileStream = fileStream;
+            _fileStream.Position = BytesRead;
+
+            CreateNetworkStream(true, url, BytesRead);
             StartDownload();
         }
     }

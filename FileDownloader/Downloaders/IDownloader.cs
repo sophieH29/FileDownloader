@@ -14,5 +14,7 @@ namespace FileDownloader.Downloaders
         /// <param name="url">url</param>
         /// <returns>true, if valid</returns>
         bool IsUrlValid(string url);
+
+        void PrepareDownload(Uri url, Stream fileStream);
     }
 }

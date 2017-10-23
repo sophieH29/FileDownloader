@@ -22,6 +22,7 @@ namespace FileDownloader.Managers
 
         private Stream _fileStream;
         private Stream _networkStream;
+        private bool _resuming = false;
 
 
         private IFileSystem _fileSystem;
@@ -109,23 +110,18 @@ namespace FileDownloader.Managers
                 FileName = _fileSystem.GenerateFileName(FileName);
                 _fileSystem.PrepareDirectory(FileName);
 
-              
-               
+                _fileStream = !_resuming ?
+                    _fileSystem.CreateStream(FileName) :
+                    _fileSystem.ResumeStream(FileName);
+
+
+
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-        }
-
-        private void CreateStreams(bool resuming)
-        {
-            _fileStream = !resuming ? 
-                _fileSystem.CreateStream(Size, FileName) :
-                _fileSystem.ResumeStream(BytesRead, FileName);
-
-            
         }
     }
 }

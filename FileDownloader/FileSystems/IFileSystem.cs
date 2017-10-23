@@ -31,8 +31,8 @@ namespace FileDownloader.FileSystems
 
         void PrepareDirectory(string fileName);
 
-        Stream CreateStream(int size, string fileName);
+        Stream CreateStream(string fileName);
 
-        Stream ResumeStream(int bytesRead, string fileName);
+        Stream ResumeStream(string fileName);
     }
 }

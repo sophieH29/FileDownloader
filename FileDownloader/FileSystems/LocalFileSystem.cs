@@ -66,9 +66,7 @@ namespace FileDownloader.FileSystems
             Console.WriteLine("Creating local file stream...");
 
             var fullFileName = GetFullFileName(fileName);
-            var fileStream = new FileStream(fullFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            fileStream.SetLength(size);
-            return fileStream;
+            return new FileStream(fullFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
         }
 
         public Stream ResumeStream(int bytesRead, string fileName)
@@ -76,7 +74,7 @@ namespace FileDownloader.FileSystems
             Console.WriteLine("Resuming local file stream...");
 
             var fullFileName = GetFullFileName(fileName);
-            return new FileStream(fullFileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite) {Position = bytesRead};
+            return new FileStream(fullFileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
         }
 
         private string GetFullFileName(string fileName)
