@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\ProtocolTypes.cs" />
     <Compile Include="Factories\DownloadManagerFactory.cs" />
     <Compile Include="Downloaders\FtpDownloader.cs" />
     <Compile Include="Downloaders\HttpDownloader.cs" />

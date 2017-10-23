@@ -15,7 +15,9 @@ namespace FileDownloader.Factories
         /// <param name="fileSystem">Specific file system</param>
         /// <param name="downloader">Specific downloader</param>
         /// <returns>instance of IDownloadManager</returns>
-        IDownloadManager GetDownloadManager(IFileSystem fileSystem, IDownloader downloader) {
+        public IDownloadManager GetDownloadManager(IFileSystem fileSystem, IDownloader downloader) {
+
+            // Currently using SimpleDownloadManager
             return new SimpleDownloadManager(fileSystem, downloader);
         }
     }
