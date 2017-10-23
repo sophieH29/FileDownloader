@@ -1,4 +1,7 @@
-﻿namespace FileDownloader.Downloaders
+﻿using System;
+using System.IO;
+
+namespace FileDownloader.Downloaders
 {
     /// <summary>
     /// Responsible for downloading files based on protocols
@@ -11,12 +14,5 @@
         /// <param name="url">url</param>
         /// <returns>true, if valid</returns>
         bool IsUrlValid(string url);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        string GetFilePart(string url);
     }
 }

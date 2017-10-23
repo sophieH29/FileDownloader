@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -43,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\ProtocolTypes.cs" />
+    <Compile Include="Enums\StorageTypes.cs" />
     <Compile Include="Factories\DownloadManagerFactory.cs" />
     <Compile Include="Downloaders\FtpDownloader.cs" />
     <Compile Include="Downloaders\HttpDownloader.cs" />
@@ -59,7 +61,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tests\IntegrationTests\" />

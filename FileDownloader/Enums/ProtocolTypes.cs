@@ -3,6 +3,7 @@
     public enum ProtocolTypes
     {
         http,
+        https,
         ftp,
         sftp
     }

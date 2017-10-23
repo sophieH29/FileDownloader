@@ -8,6 +8,13 @@ namespace FileDownloader.FileSystems
     /// </summary>
     public class AwsS3FileSystem : IFileSystem
     {
+        private readonly string _destinationPath;
+
+        public AwsS3FileSystem(string destinationPath)
+        {
+            _destinationPath = destinationPath;
+        }
+
         /// <summary>
         /// Saves file on the file system
         /// </summary>

@@ -8,7 +8,6 @@
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="source"></param>
-        void DownloadFile(string source);
+        void DownloadFile();
     }
 }

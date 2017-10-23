@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace FileDownloader.FileSystems
 {
@@ -7,6 +8,14 @@ namespace FileDownloader.FileSystems
     /// </summary>
     public class LocalFileSystem : IFileSystem
     {
+        private const string DefaultDestinationPath = @"D:\Projects\DownloadedFiles";
+        private readonly string _destinationPath;
+
+        public LocalFileSystem(string destinationPath)
+        {
+            _destinationPath = destinationPath ?? DefaultDestinationPath;
+        }
+
         /// <summary>
         /// Saves file on the file system
         /// </summary>
@@ -29,31 +38,50 @@ namespace FileDownloader.FileSystems
         }
 
         /// <summary>
-        /// Checks if file already exists with that name
-        /// </summary>
-        /// <param name="fileName">File name</param>
-        /// <returns>true, if file name exists</returns>
-        public bool FileNameExists(string fileName)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Generates new file name based on one which already exists on the file system
         /// </summary>
         /// <returns>New file name</returns>
         public string GenerateFileName(string fileName)
         {
-            throw new NotImplementedException();
+            string fullFileName = GetFullFileName(fileName);
+
+            if (!File.Exists(fullFileName)) return fullFileName;
+
+            string fileExtension = Path.GetExtension(fullFileName);
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullFileName);
+            fullFileName = fileNameWithoutExtension + Guid.NewGuid() + fileExtension;
+
+            return fullFileName;
         }
 
-        /// <summary>
-        /// Checks disc memory capacity
-        /// </summary>
-        /// <returns>true, if there is enough memory</returns>
-        public bool HasEnoughMemory()
+        public void PrepareDirectory(string fileName)
         {
-            throw new NotImplementedException();
+           var fileInfo = new FileInfo(GetFullFileName(fileName));
+            if (fileInfo.DirectoryName != null && !Directory.Exists(fileInfo.DirectoryName))
+                Directory.CreateDirectory(fileInfo.DirectoryName);
+        }
+
+        public Stream CreateStream(int size, string fileName)
+        {
+            Console.WriteLine("Creating local file stream...");
+
+            var fullFileName = GetFullFileName(fileName);
+            var fileStream = new FileStream(fullFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+            fileStream.SetLength(size);
+            return fileStream;
+        }
+
+        public Stream ResumeStream(int bytesRead, string fileName)
+        {
+            Console.WriteLine("Resuming local file stream...");
+
+            var fullFileName = GetFullFileName(fileName);
+            return new FileStream(fullFileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite) {Position = bytesRead};
+        }
+
+        private string GetFullFileName(string fileName)
+        {
+            return $@"{_destinationPath}\{fileName}";
         }
     }
 }

@@ -8,6 +8,13 @@ namespace FileDownloader.FileSystems
     /// </summary>
     public class AzureBlobFileSystem : IFileSystem
     {
+        private readonly string _destinationPath;
+
+        public AzureBlobFileSystem(string destinationPath)
+        {
+            _destinationPath = destinationPath;
+        }
+
         /// <summary>
         /// Saves file on the file system
         /// </summary>

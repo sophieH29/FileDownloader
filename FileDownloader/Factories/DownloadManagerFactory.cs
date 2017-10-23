@@ -1,6 +1,10 @@
-﻿using FileDownloader.Downloaders;
+﻿using System;
+using System.Configuration;
+
+using FileDownloader.Downloaders;
 using FileDownloader.FileSystems;
 using FileDownloader.Managers;
+using FileDownloader.Enums;
 
 namespace FileDownloader.Factories
 {
@@ -12,13 +16,77 @@ namespace FileDownloader.Factories
         /// <summary>
         /// Creates instance of specific Download manager based on parameters
         /// </summary>
-        /// <param name="fileSystem">Specific file system</param>
-        /// <param name="downloader">Specific downloader</param>
+        /// <param name="url">File source to download</param>
         /// <returns>instance of IDownloadManager</returns>
-        public IDownloadManager GetDownloadManager(IFileSystem fileSystem, IDownloader downloader) {
+        public IDownloadManager GetDownloadManager(string url)
+        {
 
-            // Currently using SimpleDownloadManager
-            return new SimpleDownloadManager(fileSystem, downloader);
+            var uri = new Uri(url);
+            var protocol = uri.Scheme;
+            IDownloader downloader = GetDownloader(protocol);
+
+            return downloader != null ? new SimpleDownloadManager(GetFileSystem(), downloader, uri) : null;
+        }
+
+        /// <summary>
+        /// Get instance of downloader based on protocol
+        /// </summary>
+        /// <param name="protocol">Uri scheme</param>
+        /// <returns>Instance of IDownloader</returns>
+        private IDownloader GetDownloader(string protocol)
+        {
+            if (Enum.TryParse(protocol, out ProtocolTypes protocolType))
+            {
+                switch (protocolType)
+                {
+                    case ProtocolTypes.http:
+                    case ProtocolTypes.https:
+                    {
+                        return new HttpDownloader();
+                    }
+                    case ProtocolTypes.ftp:
+                    {
+                        return new FtpDownloader();
+                    }
+                    case ProtocolTypes.sftp:
+                    {
+                        return new SftpDownloader();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Get instance of storage based on configuration
+        /// </summary>
+        /// <returns>Instance of IFileSystem</returns>
+        private IFileSystem GetFileSystem()
+        {
+            string destinationPath = ConfigurationManager.AppSettings["destinationPath"];
+            string storage = ConfigurationManager.AppSettings["storageType"];
+
+            if (Enum.TryParse(storage, out StorageTypes storageType))
+            {
+                switch (storageType)
+                {
+                    case StorageTypes.local:
+                        {
+                            return new LocalFileSystem(destinationPath);
+                        }
+                    case StorageTypes.aws:
+                        {
+                            return new AwsS3FileSystem(destinationPath);
+                        }
+                    case StorageTypes.azure:
+                        {
+                            return new AzureBlobFileSystem(destinationPath);
+                        }
+                }
+            }
+
+            return new LocalFileSystem(null);
         }
     }
 }

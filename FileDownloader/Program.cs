@@ -1,68 +1,41 @@
 ﻿using System;
-using System.Text.RegularExpressions;
-using FileDownloader.Downloaders;
-using FileDownloader.Enums;
+using System.Configuration;
 using FileDownloader.Factories;
-using FileDownloader.FileSystems;
 using FileDownloader.Managers;
 
 namespace FileDownloader
 {
     class Program
     {
+        public static string DestinationPath { get; set; }
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Hey! Please type a source url from where you would like to download the file");
-            string sourceUrl = Console.ReadLine();
-            Console.WriteLine($"OK. Starting downloading the file from '{sourceUrl}'");
+            string[] filesSources;
 
-            Regex protocolRegex = new Regex(@"^(?<proto>\w+)://",
-                         RegexOptions.None, TimeSpan.FromMilliseconds(150));
-            Match protocolMatch = protocolRegex.Match(sourceUrl);
-
-            if (!protocolMatch.Success)
+            if (args?.Length > 0)
             {
-                Console.WriteLine("Your url is invalid. Please, try again...");
-                return;
-            }
-
-            Console.WriteLine(protocolRegex.Match(sourceUrl).Result("You have specified url of your file using '${proto}' protocol"));
-            string protocol = protocolMatch.Groups["proto"].Value;
-
-            DownloadManagerFactory downloadManagerFactory = new DownloadManagerFactory();
-            IDownloadManager downloadManager = null;
-
-            ProtocolTypes protocolType;
-
-            if (Enum.TryParse(protocol, out protocolType))
-            {
-                switch (protocolType)
-                {
-                    case ProtocolTypes.http:
-                    {
-                        downloadManager = downloadManagerFactory.GetDownloadManager(new LocalFileSystem(), new HttpDownloader());
-                        break;
-                    }
-                    case ProtocolTypes.ftp:
-                    {
-                        downloadManager = downloadManagerFactory.GetDownloadManager(new LocalFileSystem(), new FtpDownloader());
-                        break;
-                    }
-                    case ProtocolTypes.sftp:
-                    {
-                        downloadManager = downloadManagerFactory.GetDownloadManager(new LocalFileSystem(), new SftpDownloader());
-                        break;
-                    }
-                }
+                filesSources = args;
             }
             else
             {
-                Console.WriteLine($"Sorry, there is no possibiluty to download file under {protocol} yet...");
+                filesSources = ConfigurationManager.AppSettings["sources"]?.Split(new[] { "," },
+                                                            StringSplitOptions.RemoveEmptyEntries);
             }
 
-            if (downloadManager != null)
+            if (filesSources == null)
             {
-                //TODO: do download and file saving
+                Console.WriteLine("Nothing to download");
+                return;
+            }
+
+            foreach (var sourceUrl in filesSources)
+            {
+                Console.WriteLine($"Starting download of {sourceUrl}");
+                DownloadManagerFactory downloadManagerFactory = new DownloadManagerFactory();
+                IDownloadManager downloadManager = downloadManagerFactory.GetDownloadManager(sourceUrl);
+
+                downloadManager.DownloadFile();
             }
 
 

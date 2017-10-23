@@ -2,7 +2,7 @@
 {
     public class AlternateDownloadManager : IDownloadManager
     {
-        public void DownloadFile(string source)
+        public void DownloadFile()
         {
             throw new System.NotImplementedException();
         }

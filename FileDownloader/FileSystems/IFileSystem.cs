@@ -1,17 +1,13 @@
-﻿namespace FileDownloader.FileSystems
+﻿using System.IO;
+
+namespace FileDownloader.FileSystems
 {
     /// <summary>
     /// File System interface
     /// </summary>
     public interface IFileSystem
     {
-        /// <summary>
-        /// Checks if file already exists with that name
-        /// </summary>
-        /// <param name="fileName">File name</param>
-        /// <returns>true, if file name exists</returns>
-        bool FileNameExists(string fileName);
-
+       
         /// <summary>
         /// Saves file on the file system
         /// </summary>
@@ -33,10 +29,10 @@
         /// <returns>New file name</returns>
         string GenerateFileName(string fileName);
 
-        /// <summary>
-        /// Checks disc memory capacity
-        /// </summary>
-        /// <returns>true, if there is enough memory</returns>
-        bool HasEnoughMemory();
+        void PrepareDirectory(string fileName);
+
+        Stream CreateStream(int size, string fileName);
+
+        Stream ResumeStream(int bytesRead, string fileName);
     }
 }
