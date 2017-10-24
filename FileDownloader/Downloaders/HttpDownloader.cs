@@ -61,7 +61,7 @@ namespace FileDownloader.Downloaders
         /// <param name="networkStream">Network stream from where to get bytes</param>
         private void DoDownload(Stream fileStream, Stream networkStream)
         {
-            byte[] buffer = new byte[4096];
+            byte[] buffer = new byte[10240];
             BytesToRead = Size;
             int byteSize;
 

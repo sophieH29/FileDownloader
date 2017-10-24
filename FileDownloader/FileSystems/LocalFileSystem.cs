@@ -46,7 +46,7 @@ namespace FileDownloader.FileSystems
 
             string fileExtension = Path.GetExtension(fileName);
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-            fileName = fileNameWithoutExtension + Guid.NewGuid() + fileExtension;
+            fileName = fileNameWithoutExtension + DateTime.Now.ToString("yyyyMMddHHmmssffff") + fileExtension;
 
             return fileName;
         }

@@ -39,7 +39,7 @@ namespace FileDownloader.Managers
         /// <summary>
         /// Download resource
         /// </summary>
-        public void DownloadFile()
+        public string DownloadFile()
         {
            try
             {
@@ -59,12 +59,14 @@ namespace FileDownloader.Managers
                     _downloader.Download(_fileStream, _sourceUrl);
                 }
 
+                return _fileName;
 
             }
             catch (Exception e)
             {
                 Console.WriteLine($"An error occured during download: {e}");
                 _fileSystem.DeleteFile(_fileName);
+                return null;
             }
         }
     }

@@ -35,7 +35,12 @@ namespace FileDownloader
                 DownloadManagerFactory downloadManagerFactory = new DownloadManagerFactory();
                 IDownloadManager downloadManager = downloadManagerFactory.GetDownloadManager(sourceUrl);
 
-                downloadManager.DownloadFile();
+                string downloadedFileName = downloadManager.DownloadFile();
+
+                Console.WriteLine(
+                    downloadedFileName != null
+                        ? $"File {downloadedFileName} was successfuly downloaded from resource {sourceUrl}!"
+                        : $"An error occured during download from resource {sourceUrl}!");
             }
 
             Console.ReadKey();
