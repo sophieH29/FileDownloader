@@ -7,21 +7,11 @@ namespace FileDownloader.FileSystems
     /// </summary>
     public interface IFileSystem
     {
-       
-        /// <summary>
-        /// Saves file on the file system
-        /// </summary>
-        /// <param name="fileName">File name</param>
-        /// <param name="filePath">File path</param>
-        /// <returns>true, if file name successfuly saved</returns>
-        bool SaveFile(string fileName, string filePath);
-
         /// <summary>
         /// Deletes file from file system
         /// </summary>
         /// <param name="fileName">File name</param>
-        /// <param name="filePath">File path</param>
-        void DeleteFile(string fileName, string filePath);
+        void DeleteFile(string fileName);
 
         /// <summary>
         /// Generates new file name based on one which already exists on the file system
@@ -29,10 +19,24 @@ namespace FileDownloader.FileSystems
         /// <returns>New file name</returns>
         string GenerateFileName(string fileName);
 
+        /// <summary>
+        /// Prepare directory where to download file
+        /// </summary>
+        /// <param name="fileName">File name</param>
         void PrepareDirectory(string fileName);
 
+        /// <summary>
+        /// Create file stream
+        /// </summary>
+        /// <param name="fileName">File name</param>
+        /// <returns>File stream</returns>
         Stream CreateStream(string fileName);
 
+        /// <summary>
+        /// Resume file stream
+        /// </summary>
+        /// <param name="fileName">File name</param>
+        /// <returns>Resumed file stream</returns>
         Stream ResumeStream(string fileName);
     }
 }

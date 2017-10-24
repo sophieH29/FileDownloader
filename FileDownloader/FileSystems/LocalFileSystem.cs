@@ -11,30 +11,27 @@ namespace FileDownloader.FileSystems
         private const string DefaultDestinationPath = @"D:\Projects\DownloadedFiles";
         private readonly string _destinationPath;
 
+        /// <summary>
+        /// Initiates LocalFileSystem with predefined destination path
+        /// </summary>
+        /// <param name="destinationPath">Destination path where files would be dwnloaded</param>
         public LocalFileSystem(string destinationPath)
         {
             _destinationPath = destinationPath ?? DefaultDestinationPath;
         }
 
         /// <summary>
-        /// Saves file on the file system
-        /// </summary>
-        /// <param name="fileName">File name</param>
-        /// <param name="filePath">File path</param>
-        /// <returns>true, if file name successfuly saved</returns>
-        public bool SaveFile(string fileName, string filePath)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Deletes file from file system
         /// </summary>
         /// <param name="fileName">File name</param>
-        /// <param name="filePath">File path</param>
-        public void DeleteFile(string fileName, string filePath)
+        public void DeleteFile(string fileName)
         {
-            throw new NotImplementedException();
+            var fullFileName = GetFullFileName(fileName);
+
+            if (File.Exists(fullFileName))
+            {
+                File.Delete(fullFileName);
+            }
         }
 
         /// <summary>
@@ -45,15 +42,19 @@ namespace FileDownloader.FileSystems
         {
             string fullFileName = GetFullFileName(fileName);
 
-            if (!File.Exists(fullFileName)) return fullFileName;
+            if (!File.Exists(fullFileName)) return fileName;
 
-            string fileExtension = Path.GetExtension(fullFileName);
-            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullFileName);
-            fullFileName = fileNameWithoutExtension + Guid.NewGuid() + fileExtension;
+            string fileExtension = Path.GetExtension(fileName);
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+            fileName = fileNameWithoutExtension + Guid.NewGuid() + fileExtension;
 
-            return fullFileName;
+            return fileName;
         }
 
+        /// <summary>
+        /// Prepare directory where to download file
+        /// </summary>
+        /// <param name="fileName">File name</param>
         public void PrepareDirectory(string fileName)
         {
            var fileInfo = new FileInfo(GetFullFileName(fileName));
@@ -61,7 +62,12 @@ namespace FileDownloader.FileSystems
                 Directory.CreateDirectory(fileInfo.DirectoryName);
         }
 
-        public Stream CreateStream(int size, string fileName)
+        /// <summary>
+        /// Create file stream
+        /// </summary>
+        /// <param name="fileName">File name</param>
+        /// <returns>File stream</returns>
+        public Stream CreateStream(string fileName)
         {
             Console.WriteLine("Creating local file stream...");
 
@@ -69,7 +75,12 @@ namespace FileDownloader.FileSystems
             return new FileStream(fullFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
         }
 
-        public Stream ResumeStream(int bytesRead, string fileName)
+        /// <summary>
+        /// Resume file stream
+        /// </summary>
+        /// <param name="fileName">File name</param>
+        /// <returns>Resumed file stream</returns>
+        public Stream ResumeStream(string fileName)
         {
             Console.WriteLine("Resuming local file stream...");
 
@@ -77,6 +88,11 @@ namespace FileDownloader.FileSystems
             return new FileStream(fullFileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
         }
 
+        /// <summary>
+        /// Get full file path with name
+        /// </summary>
+        /// <param name="fileName">File name</param>
+        /// <returns>Full file name</returns>
         private string GetFullFileName(string fileName)
         {
             return $@"{_destinationPath}\{fileName}";

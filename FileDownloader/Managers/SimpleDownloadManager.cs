@@ -12,23 +12,14 @@ namespace FileDownloader.Managers
     /// </summary>
     public class SimpleDownloadManager : IDownloadManager
     {
-        public DownloadStatusEnum Status = DownloadStatusEnum.Preparing;
-        public int Size;
-        public int SizeInKb;
-        public int BytesRead;
-        public string FullFileName;
-        public string FileName;
-        public Uri Url;
 
+        private string _fileName;
         private Stream _fileStream;
-        private Stream _networkStream;
         private bool _resuming = false;
 
-
-        private IFileSystem _fileSystem;
-        private IDownloader _downloader;
+        private readonly IFileSystem _fileSystem;
+        private readonly IDownloader _downloader;
         private readonly Uri _sourceUrl;
-        private const string DefaultDestinationPath = @"D:\Projects\DownloadedFiles";
 
         /// <summary>
         /// Creates instance of SimpleDownloadManager
@@ -42,85 +33,38 @@ namespace FileDownloader.Managers
             _fileSystem = fileSystem;
             _downloader = downloader;
             _sourceUrl = sourceUrl;
-            FileName = sourceUrl.IsFile ? Path.GetFileName(_sourceUrl.LocalPath) : null;
+            _fileName = Path.GetFileName(_sourceUrl.LocalPath);
         }
 
         /// <summary>
-        /// 
+        /// Download resource
         /// </summary>
         public void DownloadFile()
         {
-            if (!_sourceUrl.IsFile)
+           try
             {
-                Console.WriteLine($"Url {_sourceUrl} is invalid");
-            }
-//           long iFileSize = 0;
-//            int iBufferSize = 1024;
-//            iBufferSize *= 1000;
-//            long iExistLen = 0;
-//            var sDestinationPath = DefaultDestinationPath + @"\soap-bubble-1958650_960_720.jpg";
-//            System.IO.FileStream saveFileStream;
-//            if (System.IO.File.Exists(sDestinationPath))
-//            {
-//                System.IO.FileInfo fINfo = new System.IO.FileInfo(sDestinationPath);
-//                iExistLen = fINfo.Length;
-//            }
-//
-//            Console.WriteLine($"Downloading bytes of {sDestinationPath}");
-//            if (iExistLen > 0)
-//                saveFileStream = new System.IO.FileStream(sDestinationPath, System.IO.FileMode.Append, System.IO.FileAccess.Write, System.IO.FileShare.ReadWrite);
-//            else
-//                saveFileStream = new System.IO.FileStream(sDestinationPath, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.ReadWrite);
-//
-//
-//            System.Net.HttpWebRequest hwRq;
-//            System.Net.HttpWebResponse hwRes;
-//            hwRq = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create(_sourceUrl);
-//            hwRq.AddRange((int)iExistLen);
-//            System.IO.Stream smRespStream;
-//            hwRes = (System.Net.HttpWebResponse)hwRq.GetResponse();
-//            smRespStream = hwRes.GetResponseStream();
-//
-//            iFileSize = hwRes.ContentLength;
-//
-//            Console.WriteLine($"File size: {iFileSize}");
-//
-//            int iByteSize;
-//            byte[] downBuffer = new byte[iBufferSize];
-//
-//            while ((iByteSize = smRespStream.Read(downBuffer, 0, downBuffer.Length)) > 0)
-//            {
-//                saveFileStream.Write(downBuffer, 0, iByteSize);
-//            }
-//
-//            Console.WriteLine("Done");
-        }
+                Console.WriteLine($"Preparing download for url {_sourceUrl.OriginalString}");
 
-        private void DoDownload()
-        {
-           
-        }
+                if (_resuming)
+                {
+                    _fileStream = _fileSystem.ResumeStream(_fileName);
+                    _downloader.ResumeDownload(_fileStream, _sourceUrl);
+                }
+                else
+                {
+                    _fileName = _fileSystem.GenerateFileName(_fileName);
+                    _fileSystem.PrepareDirectory(_fileName);
 
-        private void PrepareDownload()
-        {
-            try
-            {
-                Console.WriteLine("Preparing download for url " + Url.OriginalString + ". localpath=" + FullFileName);
-
-                FileName = _fileSystem.GenerateFileName(FileName);
-                _fileSystem.PrepareDirectory(FileName);
-
-                _fileStream = !_resuming ?
-                    _fileSystem.CreateStream(FileName) :
-                    _fileSystem.ResumeStream(FileName);
-
+                    _fileStream = _fileSystem.CreateStream(_fileName);
+                    _downloader.Download(_fileStream, _sourceUrl);
+                }
 
 
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                Console.WriteLine($"An error occured during download: {e}");
+                _fileSystem.DeleteFile(_fileName);
             }
         }
     }

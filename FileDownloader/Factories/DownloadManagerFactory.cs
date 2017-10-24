@@ -35,7 +35,8 @@ namespace FileDownloader.Factories
         /// <returns>Instance of IDownloader</returns>
         private IDownloader GetDownloader(string protocol)
         {
-            if (Enum.TryParse(protocol, out ProtocolTypes protocolType))
+            ProtocolTypes protocolType;
+            if (Enum.TryParse(protocol, out protocolType))
             {
                 switch (protocolType)
                 {
@@ -64,25 +65,27 @@ namespace FileDownloader.Factories
         /// <returns>Instance of IFileSystem</returns>
         private IFileSystem GetFileSystem()
         {
-            string destinationPath = ConfigurationManager.AppSettings["destinationPath"];
-            string storage = ConfigurationManager.AppSettings["storageType"];
+            var destinationPath = ConfigurationManager.AppSettings["destinationPath"];
+            var storage = ConfigurationManager.AppSettings["storageType"];
 
-            if (Enum.TryParse(storage, out StorageTypes storageType))
+            StorageTypes storageType;
+
+            if (Enum.TryParse(storage, out storageType))
             {
                 switch (storageType)
                 {
                     case StorageTypes.local:
-                        {
-                            return new LocalFileSystem(destinationPath);
-                        }
+                    {
+                        return new LocalFileSystem(destinationPath);
+                    }
                     case StorageTypes.aws:
-                        {
-                            return new AwsS3FileSystem(destinationPath);
-                        }
+                    {
+                        return new AwsS3FileSystem(destinationPath);
+                    }
                     case StorageTypes.azure:
-                        {
-                            return new AzureBlobFileSystem(destinationPath);
-                        }
+                    {
+                        return new AzureBlobFileSystem(destinationPath);
+                    }
                 }
             }
 

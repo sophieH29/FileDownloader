@@ -38,7 +38,6 @@ namespace FileDownloader
                 downloadManager.DownloadFile();
             }
 
-
             Console.ReadKey();
         }
     }

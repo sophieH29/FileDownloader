@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using FileDownloader.Enums;
 
 namespace FileDownloader.Downloaders
 {
@@ -10,31 +9,10 @@ namespace FileDownloader.Downloaders
     /// </summary>
     public class HttpDownloader : IDownloader
     {
-        public DownloadStatusEnum Status = DownloadStatusEnum.Preparing;
-        public int Size; 
+        public int Size;
         public int SizeInKb;
         public int BytesRead;
-        public string FullFileName;
-        public string FileName;
-        public Uri Url;
-
-        private Stream _fileStream;
-        private Stream _networkStream;
-
-        /// <summary>
-        /// Download speed in kilobytes/sec
-        /// </summary>
-        public double Speed = 0;
-
-        public void DoDownload(Uri url, string localfilename)
-        {
-            
-        }
-
-        public string GetFilePart(string url)
-        {
-            throw new System.NotImplementedException();
-        }
+        public int BytesToRead;
 
         /// <summary>
         /// Checks if url is valid
@@ -43,32 +21,72 @@ namespace FileDownloader.Downloaders
         /// <returns>true, if valid</returns>
         public bool IsUrlValid(string url)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public void PrepareDownload(Uri url, Stream fileStream)
+        /// <summary>
+        /// Download resource
+        /// </summary>
+        /// <param name="fileStream">File stream where downloaded bytes will be written</param>
+        /// <param name="url">Url of resource to download</param>
+        public void Download(Stream fileStream, Uri url)
         {
-            try
-            {
-                _fileStream = fileStream;
-                _fileStream.SetLength(Size);
-                CreateNetworkStream(false, url, BytesRead);
+            Console.WriteLine("Preparing download..");
 
-                Status = DownloadStatusEnum.Prepared;
-                Console.WriteLine("Prepared download.");
-            }
-            catch (Exception e)
-            {
-                Status = DownloadStatusEnum.Error;
-                Console.WriteLine("Error occured: " + e.Message);
-            }
+            var networkStream = CreateNetworkStream(false, url, BytesRead);
+            fileStream = PrepareStream(fileStream);
+
+            DoDownload(fileStream, networkStream);
         }
 
-      
-
-        public void CreateNetworkStream(bool resuming, Uri url, int bytesRead)
+        /// <summary>
+        /// Resume download
+        /// </summary>
+        /// <param name="fileStream">Resumed file stream</param>
+        /// <param name="url">Url of resource to download</param>
+        public void ResumeDownload(Stream fileStream, Uri url)
         {
-            Console.WriteLine("Creating network stream.");
+            Console.WriteLine("Resuming download..");
+
+            var networkStream = CreateNetworkStream(true, url, BytesRead);
+            fileStream = ResumeStream(fileStream);
+
+            DoDownload(fileStream, networkStream);
+        }
+
+        /// <summary>
+        /// Responsible for download process
+        /// </summary>
+        /// <param name="fileStream">File stream where to write bytes</param>
+        /// <param name="networkStream">Network stream from where to get bytes</param>
+        private void DoDownload(Stream fileStream, Stream networkStream)
+        {
+            byte[] buffer = new byte[4096];
+            BytesToRead = Size;
+            int byteSize;
+
+            while ((byteSize = networkStream.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                fileStream.Write(buffer, 0, byteSize);
+                fileStream.Flush();
+                BytesRead += byteSize;
+                BytesToRead -= byteSize;
+            }
+
+            networkStream.Close();
+            fileStream.Close();
+        }
+
+        /// <summary>
+        /// Prepares network stream
+        /// </summary>
+        /// <param name="resuming">true, if needs to resume download</param>
+        /// <param name="url">Resource url</param>
+        /// <param name="bytesRead">Bytes already read</param>
+        /// <returns>Network stream</returns>
+        private Stream CreateNetworkStream(bool resuming, Uri url, int bytesRead)
+        {
+            Console.WriteLine("Creating network stream...");
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
 
@@ -79,49 +97,35 @@ namespace FileDownloader.Downloaders
             if (!resuming)
             {
                 Size = (int)response.ContentLength;
-                SizeInKb = (int)Size / 1024;
+                SizeInKb = Size / 1024;
             }
+
+            Console.WriteLine($"Size in kb is {SizeInKb}");
 
             //create network stream
-            _networkStream =  response.GetResponseStream();
+            return response.GetResponseStream();
         }
 
-        private void StartDownload()
+        /// <summary>
+        /// Prepares file stream by setting needed size
+        /// </summary>
+        /// <param name="fileStream">File stream</param>
+        /// <returns>File stream with pre-defined size</returns>
+        private Stream PrepareStream(Stream fileStream)
         {
-            try
-            {
-                Status = DownloadStatusEnum.Running;
-                byte[] buffer = new byte[4096];
-                int bytesToRead = Size;
-                int byteSize;
-
-                while ((byteSize = _networkStream.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    _fileStream.Write(buffer, 0, byteSize);
-                    _fileStream.Flush();
-                    BytesRead += byteSize;
-                    bytesToRead -= byteSize;
-                }
-
-                _networkStream.Close();
-                _networkStream = null;
-                _fileStream.Close();
-
-                Status = DownloadStatusEnum.Completed;
-            }
-            catch (Exception e)
-            {
-                Status = DownloadStatusEnum.Error;
-            }
+            fileStream.SetLength(Size);
+            return fileStream;
         }
 
-        private void ResumeDownload(Stream fileStream, Uri url)
+        /// <summary>
+        /// Resumes file stream by setting position form where to continue writing
+        /// </summary>
+        /// <param name="fileStream">File stream</param>
+        /// <returns>File stream with pre-defined position</returns>
+        private Stream ResumeStream(Stream fileStream)
         {
-            _fileStream = fileStream;
-            _fileStream.Position = BytesRead;
-
-            CreateNetworkStream(true, url, BytesRead);
-            StartDownload();
+            fileStream.Position = BytesRead;
+            return fileStream;
         }
     }
 }
