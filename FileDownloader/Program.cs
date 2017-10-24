@@ -31,6 +31,7 @@ namespace FileDownloader
 
             foreach (var sourceUrl in filesSources)
             {
+                Console.WriteLine();
                 Console.WriteLine($"Starting download of {sourceUrl}");
                 DownloadManagerFactory downloadManagerFactory = new DownloadManagerFactory();
                 IDownloadManager downloadManager = downloadManagerFactory.GetDownloadManager(sourceUrl);
@@ -41,6 +42,7 @@ namespace FileDownloader
                     downloadedFileName != null
                         ? $"File {downloadedFileName} was successfuly downloaded from resource {sourceUrl}!"
                         : $"An error occured during download from resource {sourceUrl}!");
+                Console.WriteLine();
             }
 
             Console.ReadKey();

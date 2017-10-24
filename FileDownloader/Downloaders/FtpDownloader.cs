@@ -29,7 +29,7 @@ namespace FileDownloader.Downloaders
         {
             Console.WriteLine("Preparing download..");
 
-            var networkStream = CreateNetworkStream(url);
+            var networkStream = CreateNetworkStream(url, BytesRead);
             fileStream = PrepareStream(fileStream);
 
             DoDownload(fileStream, networkStream);
@@ -44,7 +44,7 @@ namespace FileDownloader.Downloaders
         {
             Console.WriteLine("Resuming download..");
 
-            var networkStream = CreateNetworkStream(url, true);
+            var networkStream = CreateNetworkStream(url, BytesRead, true);
             fileStream = ResumeStream(fileStream);
 
             DoDownload(fileStream, networkStream);
@@ -77,10 +77,11 @@ namespace FileDownloader.Downloaders
         /// Prepares network stream
         /// </summary>
         /// <returns>Network stream</returns>
-        private Stream CreateNetworkStream(Uri url, bool resuming = false)
+        private Stream CreateNetworkStream(Uri url, int bytesRead, bool resuming = false)
         {
             FtpWebRequest request = CreateFtpWebRequest(url, true);
             request.Method = WebRequestMethods.Ftp.DownloadFile;
+            if (bytesRead > 0)  request.ContentOffset = bytesRead;
 
             WebResponse response = request.GetResponse();
 
