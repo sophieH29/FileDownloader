@@ -15,39 +15,54 @@ namespace FileDownloader.Downloaders
         public int BytesRead;
         public int BytesToRead;
 
+        private bool _retry;
+        private readonly int _maxRetry;
+
+        public FtpDownloader()
+        {
+            _maxRetry = Int16.Parse(ConfigurationManager.AppSettings["ftpRetryCount"]);
+        }
+
         public bool IsUrlValid(string url)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// Download resource
+        /// StartDownload resource
+        /// </summary>
+        /// <param name="fileStream">File stream where downloaded bytes will be written</param>
+        /// <param name="url">Url of resource to download</param>
+        public void StartDownload(Stream fileStream, Uri url)
+        {
+            var downloadAction = new Action(delegate
+            {
+                Download(fileStream, url);
+            });
+
+            WithRetry(downloadAction);
+        }
+
+        /// <summary>
+        /// StartDownload resource
         /// </summary>
         /// <param name="fileStream">File stream where downloaded bytes will be written</param>
         /// <param name="url">Url of resource to download</param>
         public void Download(Stream fileStream, Uri url)
         {
             Console.WriteLine("Preparing download..");
-
             var networkStream = CreateNetworkStream(url, BytesRead);
-            fileStream = PrepareStream(fileStream);
 
-            DoDownload(fileStream, networkStream);
-        }
-
-        /// <summary>
-        /// Resume download
-        /// </summary>
-        /// <param name="fileStream">Resumed file stream</param>
-        /// <param name="url">Url of resource to download</param>
-        public void ResumeDownload(Stream fileStream, Uri url)
-        {
-            Console.WriteLine("Resuming download..");
-
-            var networkStream = CreateNetworkStream(url, BytesRead, true);
-            fileStream = ResumeStream(fileStream);
-
-            DoDownload(fileStream, networkStream);
+            try
+            {
+                fileStream.SetLength(Size);
+                DoDownload(fileStream, networkStream);
+            }
+            catch (Exception)
+            {
+                networkStream.Close();
+                throw;
+            }
         }
 
         /// <summary>
@@ -76,8 +91,10 @@ namespace FileDownloader.Downloaders
         /// <summary>
         /// Prepares network stream
         /// </summary>
+        /// <param name="url">Resource url</param>
+        /// <param name="bytesRead">Bytes already read</param>
         /// <returns>Network stream</returns>
-        private Stream CreateNetworkStream(Uri url, int bytesRead, bool resuming = false)
+        private Stream CreateNetworkStream(Uri url, int bytesRead)
         {
             FtpWebRequest request = CreateFtpWebRequest(url, true);
             request.Method = WebRequestMethods.Ftp.DownloadFile;
@@ -85,7 +102,7 @@ namespace FileDownloader.Downloaders
 
             WebResponse response = request.GetResponse();
 
-            if (!resuming)
+            if (!_retry)
             {
                 Size = (int)response.ContentLength;
                 SizeInKb = Size / 1024;
@@ -116,25 +133,35 @@ namespace FileDownloader.Downloaders
         }
 
         /// <summary>
-        /// Prepares file stream by setting needed size
+        /// Retries of execute downloading of specified amount of times
         /// </summary>
-        /// <param name="fileStream">File stream</param>
-        /// <returns>File stream with pre-defined size</returns>
-        private Stream PrepareStream(Stream fileStream)
+        /// <param name="method">Method to execute</param>
+        private void WithRetry(Action method)
         {
-            fileStream.SetLength(Size);
-            return fileStream;
-        }
-
-        /// <summary>
-        /// Resumes file stream by setting position form where to continue writing
-        /// </summary>
-        /// <param name="fileStream">File stream</param>
-        /// <returns>File stream with pre-defined position</returns>
-        private Stream ResumeStream(Stream fileStream)
-        {
-            fileStream.Position = BytesRead;
-            return fileStream;
+            int tryCount = 0;
+            bool done = false;
+            do
+            {
+                try
+                {
+                    method();
+                    done = true;
+                }
+                catch (Exception)
+                {
+                    if (tryCount < _maxRetry)
+                    {
+                        tryCount++;
+                        _retry = true;
+                        Console.WriteLine($"Retry #{tryCount} downloading...");
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+            while (!done);
         }
     }
 }

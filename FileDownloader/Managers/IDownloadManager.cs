@@ -6,7 +6,7 @@
     public interface IDownloadManager
     {
         /// <summary>
-        /// Download specific resource
+        /// StartDownload specific resource
         /// </summary>
         /// <returns>Donloaded file name</returns>
         string DownloadFile();

@@ -2,7 +2,6 @@
 using System.IO;
 using FileDownloader.FileSystems;
 using FileDownloader.Downloaders;
-using FileDownloader.Enums;
 
 namespace FileDownloader.Managers
 {
@@ -15,7 +14,6 @@ namespace FileDownloader.Managers
 
         private string _fileName;
         private Stream _fileStream;
-        private bool _resuming = false;
 
         private readonly IFileSystem _fileSystem;
         private readonly IDownloader _downloader;
@@ -37,7 +35,7 @@ namespace FileDownloader.Managers
         }
 
         /// <summary>
-        /// Download resource
+        /// StartDownload resource
         /// </summary>
         public string DownloadFile()
         {
@@ -45,19 +43,12 @@ namespace FileDownloader.Managers
             {
                 Console.WriteLine($"Preparing download for url {_sourceUrl.OriginalString}");
 
-                if (_resuming)
-                {
-                    _fileStream = _fileSystem.ResumeStream(_fileName);
-                    _downloader.ResumeDownload(_fileStream, _sourceUrl);
-                }
-                else
-                {
-                    _fileName = _fileSystem.GenerateFileName(_fileName);
-                    _fileSystem.PrepareDirectory(_fileName);
+               
+                _fileName = _fileSystem.GenerateFileName(_fileName);
+                _fileSystem.PrepareDirectory(_fileName);
 
-                    _fileStream = _fileSystem.CreateStream(_fileName);
-                    _downloader.Download(_fileStream, _sourceUrl);
-                }
+                _fileStream = _fileSystem.CreateStream(_fileName);
+                _downloader.StartDownload(_fileStream, _sourceUrl);
 
                 return _fileName;
 

@@ -13,7 +13,7 @@ namespace FileDownloader.Downloaders
             throw new NotImplementedException();
         }
 
-        public void Download(Stream fileStream, Uri url)
+        public void StartDownload(Stream fileStream, Uri url)
         {
             throw new NotImplementedException();
         }

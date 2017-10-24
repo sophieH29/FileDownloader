@@ -9,12 +9,12 @@ using FileDownloader.Enums;
 namespace FileDownloader.Factories
 {
     /// <summary>
-    /// Responsible for creating instance of specific Download manager based on parameters
+    /// Responsible for creating instance of specific StartDownload manager based on parameters
     /// </summary>
     public class DownloadManagerFactory
     {
         /// <summary>
-        /// Creates instance of specific Download manager based on parameters
+        /// Creates instance of specific StartDownload manager based on parameters
         /// </summary>
         /// <param name="url">File source to download</param>
         /// <returns>instance of IDownloadManager</returns>
