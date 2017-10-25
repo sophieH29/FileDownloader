@@ -8,22 +8,14 @@ namespace FileDownloader.Downloaders
     /// <summary>
     /// Responsible for downloading files based on FTP protocol
     /// </summary>
-    public class FtpDownloader : IDownloader
+    public class FtpDownloader : BaseDownloader, IDownloader
     {
-        public int Size;
-        public int SizeInKb;
-        public int BytesRead;
-        public int BytesToRead;
-
-        private bool _retry;
-        private readonly int _maxRetry;
-
         /// <summary>
         /// Initiates FTP Downloader with defined maximum retries count
         /// </summary>
         public FtpDownloader()
         {
-            _maxRetry = Int16.Parse(ConfigurationManager.AppSettings["ftpRetryCount"]);
+            MaxRetry = Int16.Parse(ConfigurationManager.AppSettings["ftpRetryCount"]);
         }
 
         /// <summary>
@@ -33,8 +25,7 @@ namespace FileDownloader.Downloaders
         /// <returns>true, if valid</returns>
         public bool IsUrlValid(string url)
         {
-            Uri uri;
-            return Uri.TryCreate(url, UriKind.Absolute, out uri) && (uri.Scheme == Uri.UriSchemeFtp);
+            return Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeFtp;
         }
 
         /// <summary>
@@ -53,11 +44,11 @@ namespace FileDownloader.Downloaders
         }
 
         /// <summary>
-        /// StartDownload resource
+        /// Download resource
         /// </summary>
         /// <param name="fileStream">File stream where downloaded bytes will be written</param>
         /// <param name="url">Url of resource to download</param>
-        public void Download(Stream fileStream, Uri url)
+        protected override void Download(Stream fileStream, Uri url)
         {
             Console.WriteLine("Preparing download..");
             var networkStream = CreateNetworkStream(url, BytesRead);
@@ -75,29 +66,6 @@ namespace FileDownloader.Downloaders
         }
 
         /// <summary>
-        /// Responsible for download process
-        /// </summary>
-        /// <param name="fileStream">File stream where to write bytes</param>
-        /// <param name="networkStream">Network stream from where to get bytes</param>
-        private void DoDownload(Stream fileStream, Stream networkStream)
-        {
-            byte[] buffer = new byte[10240];
-            BytesToRead = Size;
-            int byteSize;
-
-            while ((byteSize = networkStream.Read(buffer, 0, buffer.Length)) > 0)
-            {
-                fileStream.Write(buffer, 0, byteSize);
-                fileStream.Flush();
-                BytesRead += byteSize;
-                BytesToRead -= byteSize;
-            }
-
-            networkStream.Close();
-            fileStream.Close();
-        }
-
-        /// <summary>
         /// Prepares network stream
         /// </summary>
         /// <param name="url">Resource url</param>
@@ -111,7 +79,7 @@ namespace FileDownloader.Downloaders
 
             WebResponse response = request.GetResponse();
 
-            if (!_retry)
+            if (!Retry)
             {
                 Size = (int)response.ContentLength;
                 SizeInKb = Size / 1024;
@@ -138,38 +106,6 @@ namespace FileDownloader.Downloaders
             request.Credentials = new NetworkCredential(userName, password);
 
             return request;
-        }
-
-        /// <summary>
-        /// Retries of execute downloading of specified amount of times
-        /// </summary>
-        /// <param name="method">Method to execute</param>
-        private void WithRetry(Action method)
-        {
-            int tryCount = 0;
-            bool done = false;
-            do
-            {
-                try
-                {
-                    method();
-                    done = true;
-                }
-                catch (Exception)
-                {
-                    if (tryCount < _maxRetry)
-                    {
-                        tryCount++;
-                        _retry = true;
-                        Console.WriteLine($"Retry #{tryCount} downloading...");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-            while (!done);
         }
     }
 }
