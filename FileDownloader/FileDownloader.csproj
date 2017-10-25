@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Downloaders\BaseDownloader.cs" />
     <Compile Include="Enums\ProtocolTypes.cs" />
     <Compile Include="Enums\StorageTypes.cs" />
     <Compile Include="Factories\DownloadManagerFactory.cs" />
