@@ -1,41 +1,46 @@
 ﻿using System.Collections.Generic;
 using FileDownloader.Downloaders;
 using FileDownloader.Factories;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace FileDownloader.Tests.Factories
 {
-	[TestClass]
+	[TestFixture]
 	public class DownloadManagerFactoryTest
 	{
 		private DownloadManagerFactory _factory;
+		private List<string> _successfulSources;
+		private string _unsucessfulSource;
 
-		[TestInitialize]
-		public void Init()
+		[SetUp]
+		public void SetUp()
 		{
 			_factory = DownloadManagerFactory.GetInstance();
+			_successfulSources = new List<string>
+			{
+				"http://test/string",
+				"https://test/string",
+				"ftp://test/string",
+				"sftp://test/string"
+			};
+			_unsucessfulSource = "some://test/string";
 		}
 
-		[TestMethod]
+		[Test]
 		public void GetDownloadManager_NullExpected()
 		{
-			var source = "some://test/string";
-			var type = _factory.GetDownloadManager(source);
+			var type = _factory.GetDownloadManager(_unsucessfulSource);
 			Assert.IsNull(type);
 		}
 
-		[TestMethod]
-		public void GetDownloadManager_HTTP()
+		[Test]
+		public void GetDownloadManager_ManagerExpected()
 		{
-			var source = "http://test/string";
-			var type = _factory.GetDownloadManager(source);
-			var downloader = type as HttpDownloader;
-			Assert.IsTrue(downloader != null);
-
-			source = "https://test/string";
-			type = _factory.GetDownloadManager(source);
-			downloader = type as HttpDownloader;
-			Assert.IsTrue(downloader != null);
+			foreach (var source in _successfulSources)
+			{
+				var type = _factory.GetDownloadManager(source);
+				Assert.IsNotNull(type);
+			}
 		}
 	}
 }
