@@ -15,13 +15,15 @@ namespace FileDownloader.Tests
         private Mock<IDownloader> _downloaderMock;
         private Uri Url => new Uri("http://ahdzbook.com/data/out/240/hdwp694087183.jpg");
         private const string FileName = "hdwp694087183.jpg";
-        private readonly Stream _fileStream = new FileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+        private Stream _fileStream;
 
         [SetUp]
         public void Setup()
         {
             _fileSystemMock = new Mock<IFileSystem>();
             _downloaderMock = new Mock<IDownloader>();
+
+            _fileStream = new FileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
         }
 
         [TearDown]
@@ -29,6 +31,8 @@ namespace FileDownloader.Tests
         {
             _fileSystemMock.Verify();
             _downloaderMock.Verify();
+
+            _fileStream.Close();
         }
 
         [Test]
