@@ -18,7 +18,10 @@ namespace FileDownloader.Factories
         /// </summary>
         private DownloadManagerFactory() { }
 
-        private static DownloadManagerFactory _downloadManagerInstance;
+        /// <summary>
+        /// Factory instance
+        /// </summary>
+        private static DownloadManagerFactory _downloadManagerFactoryInstance;
 
         /// <summary>
         /// Object locker
@@ -33,13 +36,13 @@ namespace FileDownloader.Factories
         {
             lock (Locker)
             {
-                if (_downloadManagerInstance == null)
+                if (_downloadManagerFactoryInstance == null)
                 {
-                    _downloadManagerInstance = new DownloadManagerFactory();
+                    _downloadManagerFactoryInstance = new DownloadManagerFactory();
                 }
             }
 
-            return _downloadManagerInstance;
+            return _downloadManagerFactoryInstance;
         }
 
         /// <summary>

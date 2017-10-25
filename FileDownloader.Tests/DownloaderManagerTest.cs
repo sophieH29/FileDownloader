@@ -9,7 +9,7 @@ namespace FileDownloader.Tests
 
 
         [TestMethod]
-        public void TestMethod1()
+        public void VerifyDownloaderManager()
         {
         }
     }
