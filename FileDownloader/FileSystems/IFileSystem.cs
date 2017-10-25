@@ -31,12 +31,5 @@ namespace FileDownloader.FileSystems
         /// <param name="fileName">File name</param>
         /// <returns>File stream</returns>
         Stream CreateStream(string fileName);
-
-        /// <summary>
-        /// Resume file stream
-        /// </summary>
-        /// <param name="fileName">File name</param>
-        /// <returns>Resumed file stream</returns>
-        Stream ResumeStream(string fileName);
     }
 }

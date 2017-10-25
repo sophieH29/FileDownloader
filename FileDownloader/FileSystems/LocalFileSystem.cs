@@ -76,19 +76,6 @@ namespace FileDownloader.FileSystems
         }
 
         /// <summary>
-        /// Resume file stream
-        /// </summary>
-        /// <param name="fileName">File name</param>
-        /// <returns>Resumed file stream</returns>
-        public Stream ResumeStream(string fileName)
-        {
-            Console.WriteLine("Resuming local file stream...");
-
-            var fullFileName = GetFullFileName(fileName);
-            return new FileStream(fullFileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-        }
-
-        /// <summary>
         /// Get full file path with name
         /// </summary>
         /// <param name="fileName">File name</param>

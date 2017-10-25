@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileDownloader", "FileDownl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileDownloader.UnitTests", "FileDownloader.Tests\FileDownloader.UnitTests.csproj", "{5D3C5F70-3D78-4000-A66E-B6825A5106BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileDownloader.IntegrationTests", "FileDownloader.IntegrationTests\FileDownloader.IntegrationTests.csproj", "{77F5F966-3F44-4647-8434-5F4DE95401B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5D3C5F70-3D78-4000-A66E-B6825A5106BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D3C5F70-3D78-4000-A66E-B6825A5106BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D3C5F70-3D78-4000-A66E-B6825A5106BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77F5F966-3F44-4647-8434-5F4DE95401B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77F5F966-3F44-4647-8434-5F4DE95401B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77F5F966-3F44-4647-8434-5F4DE95401B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77F5F966-3F44-4647-8434-5F4DE95401B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

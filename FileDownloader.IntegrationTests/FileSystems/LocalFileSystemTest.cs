@@ -2,7 +2,7 @@
 using FileDownloader.FileSystems;
 using NUnit.Framework;
 
-namespace FileDownloader.Tests.FileSystems
+namespace FileDownloader.IntegrationTests.FileSystems
 {
     [TestFixture]
     public class LocalFileSystemTest
@@ -48,4 +48,5 @@ namespace FileDownloader.Tests.FileSystems
             Assert.AreNotEqual(_fileName, generatedFileName, "Should be generated new file name");
         }
     }
+
 }

@@ -35,10 +35,5 @@ namespace FileDownloader.FileSystems
         {
             throw new NotImplementedException();
         }
-
-        public Stream ResumeStream(string fileName)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
