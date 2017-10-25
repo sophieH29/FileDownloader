@@ -36,7 +36,7 @@ namespace FileDownloader.Downloaders
         /// <summary>
         /// Max count of retries
         /// </summary>
-        protected int MaxRetry;
+        protected byte MaxRetry;
 
         /// <summary>
         /// Download resource

@@ -14,14 +14,46 @@ namespace FileDownloader.Factories
     public class DownloadManagerFactory
     {
         /// <summary>
+        /// Private constructor of DownloadManagerFactory
+        /// </summary>
+        private DownloadManagerFactory() { }
+
+        private static DownloadManagerFactory _downloadManagerInstance;
+
+        /// <summary>
+        /// Object locker
+        /// </summary>
+        private static readonly object Locker = new object();
+
+        /// <summary>
+        /// Returns already created instance of DownloadManagerFactory or creates new one
+        /// </summary>
+        /// <returns></returns>
+        public static DownloadManagerFactory GetInstance()
+        {
+            lock (Locker)
+            {
+                if (_downloadManagerInstance == null)
+                {
+                    _downloadManagerInstance = new DownloadManagerFactory();
+                }
+            }
+
+            return _downloadManagerInstance;
+        }
+
+        /// <summary>
         /// Creates instance of specific StartDownload manager based on parameters
         /// </summary>
         /// <param name="url">File source to download</param>
         /// <returns>instance of IDownloadManager</returns>
         public IDownloadManager GetDownloadManager(string url)
         {
-
-            var uri = new Uri(url);
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            {
+                return null;
+            }
+           
             var protocol = uri.Scheme;
             IDownloader downloader = GetDownloader(protocol);
 
@@ -35,8 +67,7 @@ namespace FileDownloader.Factories
         /// <returns>Instance of IDownloader</returns>
         private IDownloader GetDownloader(string protocol)
         {
-            ProtocolTypes protocolType;
-            if (Enum.TryParse(protocol, out protocolType))
+            if (Enum.TryParse(protocol, out ProtocolTypes protocolType))
             {
                 switch (protocolType)
                 {
@@ -68,9 +99,7 @@ namespace FileDownloader.Factories
             var destinationPath = ConfigurationManager.AppSettings["destinationPath"];
             var storage = ConfigurationManager.AppSettings["storageType"];
 
-            StorageTypes storageType;
-
-            if (Enum.TryParse(storage, out storageType))
+            if (Enum.TryParse(storage, out StorageTypes storageType))
             {
                 switch (storageType)
                 {

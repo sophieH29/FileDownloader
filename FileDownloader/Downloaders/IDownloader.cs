@@ -9,13 +9,6 @@ namespace FileDownloader.Downloaders
     public interface IDownloader
     {
         /// <summary>
-        /// Checks if url is valid
-        /// </summary>
-        /// <param name="url">url</param>
-        /// <returns>true, if valid</returns>
-        bool IsUrlValid(string url);
-
-        /// <summary>
         /// StartDownload resource
         /// </summary>
         /// <param name="fileStream">File stream where downloaded bytes will be written</param>

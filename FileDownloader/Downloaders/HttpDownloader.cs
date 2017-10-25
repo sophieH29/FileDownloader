@@ -16,20 +16,13 @@ namespace FileDownloader.Downloaders
         /// </summary>
         public HttpDownloader()
         {
-            MaxRetry = Int16.Parse(ConfigurationManager.AppSettings["httpRetryCount"]);
+            if (!byte.TryParse(ConfigurationManager.AppSettings["httpRetryCount"], out MaxRetry))
+            {
+                MaxRetry = 10;
+            }
+            
         }
-
-        /// <summary>
-        /// Checks if url is valid
-        /// </summary>
-        /// <param name="url">url</param>
-        /// <returns>true, if valid</returns>
-        public bool IsUrlValid(string url)
-        {
-            return Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
-                (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
-        }
-
+        
         /// <summary>
         /// StartDownload resource
         /// </summary>
@@ -37,12 +30,7 @@ namespace FileDownloader.Downloaders
         /// <param name="url">Url of resource to download</param>
         public void StartDownload(Stream fileStream, Uri url)
         {
-            var downloadAction = new Action(delegate
-            {
-                Download(fileStream, url);
-            });
-
-            WithRetry(downloadAction);
+            WithRetry(() => Download(fileStream, url));
         }
 
         /// <summary>

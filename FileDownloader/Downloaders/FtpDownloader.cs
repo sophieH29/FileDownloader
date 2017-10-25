@@ -15,17 +15,10 @@ namespace FileDownloader.Downloaders
         /// </summary>
         public FtpDownloader()
         {
-            MaxRetry = Int16.Parse(ConfigurationManager.AppSettings["ftpRetryCount"]);
-        }
-
-        /// <summary>
-        /// Checks if url is valid
-        /// </summary>
-        /// <param name="url">url</param>
-        /// <returns>true, if valid</returns>
-        public bool IsUrlValid(string url)
-        {
-            return Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeFtp;
+            if (!byte.TryParse(ConfigurationManager.AppSettings["ftpRetryCount"], out MaxRetry))
+            {
+                MaxRetry = 10;
+            }
         }
 
         /// <summary>
@@ -35,12 +28,7 @@ namespace FileDownloader.Downloaders
         /// <param name="url">Url of resource to download</param>
         public void StartDownload(Stream fileStream, Uri url)
         {
-            var downloadAction = new Action(delegate
-            {
-                Download(fileStream, url);
-            });
-
-            WithRetry(downloadAction);
+            WithRetry(() => Download(fileStream, url));
         }
 
         /// <summary>

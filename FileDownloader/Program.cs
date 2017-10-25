@@ -33,8 +33,7 @@ namespace FileDownloader
             {
                 Console.WriteLine();
                 Console.WriteLine($"Starting download of {sourceUrl}");
-                DownloadManagerFactory downloadManagerFactory = new DownloadManagerFactory();
-                IDownloadManager downloadManager = downloadManagerFactory.GetDownloadManager(sourceUrl);
+                IDownloadManager downloadManager = DownloadManagerFactory.GetInstance().GetDownloadManager(sourceUrl);
 
                 string downloadedFileName = downloadManager.DownloadFile();
 

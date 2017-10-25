@@ -18,18 +18,10 @@ namespace FileDownloader.Downloaders
         /// </summary>
         public SftpDownloader()
         {
-            MaxRetry = Int16.Parse(ConfigurationManager.AppSettings["sftpRetryCount"]);
-        }
-
-        /// <summary>
-        /// Checks if url is valid
-        /// </summary>
-        /// <param name="url">url</param>
-        /// <returns>true, if valid</returns>
-        public bool IsUrlValid(string url)
-        {
-            return Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
-                string.Equals(uri.Scheme, "sftp", StringComparison.OrdinalIgnoreCase);
+            if (!byte.TryParse(ConfigurationManager.AppSettings["sftpRetryCount"], out MaxRetry))
+            {
+                MaxRetry = 10;
+            }
         }
 
         /// <summary>
@@ -43,25 +35,11 @@ namespace FileDownloader.Downloaders
             string username = ConfigurationManager.AppSettings["sftpUserName"];
             string password = ConfigurationManager.AppSettings["sftpPassword"];
 
-            string sourceUrl = url.LocalPath;
-
-
             using (_client = new SftpClient(host, username, password))
             {
                 _client.Connect();
 
-                if (!_client.Exists(sourceUrl))
-                {
-                    Console.WriteLine($"File source {sourceUrl} does not exists...");
-                    return;
-                }
-
-                var downloadAction = new Action(delegate
-                {
-                    Download(fileStream, url);
-                });
-
-                WithRetry(downloadAction);
+                WithRetry(() => Download(fileStream, url));
 
                 _client.Disconnect();
             }
