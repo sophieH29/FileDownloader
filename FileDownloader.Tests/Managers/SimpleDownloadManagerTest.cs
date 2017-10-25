@@ -6,7 +6,7 @@ using FileDownloader.Managers;
 using Moq;
 using NUnit.Framework;
 
-namespace FileDownloader.Tests
+namespace FileDownloader.Tests.Managers
 {
     [TestFixture]
     public class SimpleDownloadManagerTest

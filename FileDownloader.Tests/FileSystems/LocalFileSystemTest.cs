@@ -1,10 +1,8 @@
 ﻿using System.IO;
 using FileDownloader.FileSystems;
-using FileDownloader.Managers;
-using Moq;
 using NUnit.Framework;
 
-namespace FileDownloader.Tests
+namespace FileDownloader.Tests.FileSystems
 {
     [TestFixture]
     public class LocalFileSystemTest
@@ -36,8 +34,18 @@ namespace FileDownloader.Tests
         [Test]
         public void VerifyGenerateFileNameWhenFileExists()
         {
+            // Create a file to write to.
+            using (StreamWriter sw = File.CreateText($@"{_destinationPath}\{_fileName}"))
+            {
+                sw.WriteLine("Hello");
+                sw.WriteLine("And");
+                sw.WriteLine("Welcome");
+            }
+
             var generatedFileName = _localFileSystem.GenerateFileName(_fileName);
-            Assert.AreEqual(_fileName, generatedFileName, "Generated file should be correct");
+
+            _localFileSystem.DeleteFile(_fileName);
+            Assert.AreNotEqual(_fileName, generatedFileName, "Should be generated new file name");
         }
     }
 }
