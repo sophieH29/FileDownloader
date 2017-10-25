@@ -18,6 +18,9 @@ namespace FileDownloader.Downloaders
         private bool _retry;
         private readonly int _maxRetry;
 
+        /// <summary>
+        /// Initiates HTTP(s) Downloader with defined maximum retries count
+        /// </summary>
         public HttpDownloader()
         {
             _maxRetry = Int16.Parse(ConfigurationManager.AppSettings["httpRetryCount"]);
@@ -30,7 +33,8 @@ namespace FileDownloader.Downloaders
         /// <returns>true, if valid</returns>
         public bool IsUrlValid(string url)
         {
-            throw new NotImplementedException();
+            Uri uri;
+            return Uri.TryCreate(url, UriKind.Absolute, out uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
         }
 
         /// <summary>
@@ -113,9 +117,8 @@ namespace FileDownloader.Downloaders
             {
                 Size = (int)response.ContentLength;
                 SizeInKb = Size / 1024;
+                Console.WriteLine($"Size in kb is {SizeInKb}");
             }
-
-            Console.WriteLine($"Size in kb is {SizeInKb}");
 
             //create network stream
             return response.GetResponseStream();

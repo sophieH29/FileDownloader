@@ -18,14 +18,23 @@ namespace FileDownloader.Downloaders
         private bool _retry;
         private readonly int _maxRetry;
 
+        /// <summary>
+        /// Initiates FTP Downloader with defined maximum retries count
+        /// </summary>
         public FtpDownloader()
         {
             _maxRetry = Int16.Parse(ConfigurationManager.AppSettings["ftpRetryCount"]);
         }
 
+        /// <summary>
+        /// Checks if url is valid
+        /// </summary>
+        /// <param name="url">url</param>
+        /// <returns>true, if valid</returns>
         public bool IsUrlValid(string url)
         {
-            throw new NotImplementedException();
+            Uri uri;
+            return Uri.TryCreate(url, UriKind.Absolute, out uri) && (uri.Scheme == Uri.UriSchemeFtp);
         }
 
         /// <summary>
@@ -106,9 +115,8 @@ namespace FileDownloader.Downloaders
             {
                 Size = (int)response.ContentLength;
                 SizeInKb = Size / 1024;
+                Console.WriteLine($"Size in kb is {SizeInKb}");
             }
-
-            Console.WriteLine($"Size in kb is {SizeInKb}");
 
             //create network stream
             return response.GetResponseStream();
