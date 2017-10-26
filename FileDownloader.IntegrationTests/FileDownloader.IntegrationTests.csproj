@@ -48,13 +48,20 @@
       <HintPath>..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Downloaders\FtpDownloaderTest.cs" />
+    <Compile Include="Downloaders\HttpDownloaderTest.cs" />
+    <Compile Include="Downloaders\SftpDownloaderTest.cs" />
     <Compile Include="FileSystems\LocalFileSystemTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
