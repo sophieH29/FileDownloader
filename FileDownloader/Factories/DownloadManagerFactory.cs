@@ -52,7 +52,8 @@ namespace FileDownloader.Factories
         /// <returns>instance of IDownloadManager</returns>
         public IDownloadManager GetDownloadManager(string url)
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            Uri uri;
+            if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
             {
                 return null;
             }
@@ -70,7 +71,8 @@ namespace FileDownloader.Factories
         /// <returns>Instance of IDownloader</returns>
         private IDownloader GetDownloader(string protocol)
         {
-            if (Enum.TryParse(protocol, out ProtocolTypes protocolType))
+            ProtocolTypes protocolType;
+            if (Enum.TryParse(protocol, out protocolType))
             {
                 switch (protocolType)
                 {
@@ -102,7 +104,8 @@ namespace FileDownloader.Factories
             var destinationPath = ConfigurationManager.AppSettings["destinationPath"];
             var storage = ConfigurationManager.AppSettings["storageType"];
 
-            if (Enum.TryParse(storage, out StorageTypes storageType))
+            StorageTypes storageType;
+            if (Enum.TryParse(storage, out storageType))
             {
                 switch (storageType)
                 {

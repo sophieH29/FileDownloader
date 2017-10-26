@@ -73,7 +73,7 @@ namespace FileDownloader.Downloaders
         /// Retries of execute downloading of specified amount of times
         /// </summary>
         /// <param name="method">Method to execute</param>
-        protected void WithRetry(Action method)
+        protected virtual void WithRetry(Action method)
         {
             int tryCount = 0;
             bool done = false;
