@@ -11,29 +11,36 @@ namespace FileDownloader.IntegrationTests.FileSystems
         private string _fileName = "filename.txt";
         private LocalFileSystem _localFileSystem;
 
-        [SetUp]
-        public void Setup()
-        {
-            _localFileSystem = new LocalFileSystem(_destinationPath);
-            _localFileSystem.PrepareDirectory(_fileName);
-        }
 
-        [TearDown]
-        public void TearDown()
+        [Test]
+        public void VerifyPrepareDirectory()
         {
+           _localFileSystem = new LocalFileSystem(_destinationPath);
+           _localFileSystem.PrepareDirectory(_fileName);
+
+            Assert.IsTrue(Directory.Exists(_destinationPath), "Folder should be created");
+
             Directory.Delete(_destinationPath);
         }
 
         [Test]
         public void VerifyGenerateFileName()
         {
+            _localFileSystem = new LocalFileSystem(_destinationPath);
+            _localFileSystem.PrepareDirectory(_fileName);
+
             var generatedFileName = _localFileSystem.GenerateFileName(_fileName);
             Assert.AreEqual(_fileName, generatedFileName, "Generated file should be correct");
+
+            Directory.Delete(_destinationPath);
         }
 
         [Test]
         public void VerifyGenerateFileNameWhenFileExists()
         {
+            _localFileSystem = new LocalFileSystem(_destinationPath);
+            _localFileSystem.PrepareDirectory(_fileName);
+
             // Create a file to write to.
             using (StreamWriter sw = File.CreateText($@"{_destinationPath}\{_fileName}"))
             {
@@ -46,6 +53,8 @@ namespace FileDownloader.IntegrationTests.FileSystems
 
             _localFileSystem.DeleteFile(_fileName);
             Assert.AreNotEqual(_fileName, generatedFileName, "Should be generated new file name");
+
+            Directory.Delete(_destinationPath);
         }
     }
 
