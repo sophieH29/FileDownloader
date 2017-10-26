@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
-using Renci.SshNet;
 
 namespace FileDownloader.Downloaders
 {
@@ -43,11 +42,11 @@ namespace FileDownloader.Downloaders
         /// <param name="url">Url of resource to download</param>
         public void Download(Stream fileStream, Uri url)
         {
-            using (var client = new SftpClient(_host, _username, _password))
+            using (ISftpClientWrapper client = new SftpClientWrapper(_host, _username, _password))
             {
-                client.Connect();
+                client.ConnectClient();
 
-                using (var sourceStream = client.Open(url.LocalPath, FileMode.Open))
+                using (var sourceStream = client.CreateStream(url.LocalPath, FileMode.Open))
                 {
                     if (fileStream.Position > 0) sourceStream.Seek(fileStream.Position, SeekOrigin.Begin);
 
@@ -61,7 +60,7 @@ namespace FileDownloader.Downloaders
                     DoDownload(fileStream, sourceStream);
                 }
 
-                client.Disconnect();
+                client.DisconnectClient();
             }
         }
     }

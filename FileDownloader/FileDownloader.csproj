@@ -54,6 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Downloaders\BaseDownloader.cs" />
+    <Compile Include="Downloaders\ISftpClientWrapper.cs" />
+    <Compile Include="Downloaders\SftpClientWrapper.cs" />
     <Compile Include="Enums\ProtocolTypes.cs" />
     <Compile Include="Enums\StorageTypes.cs" />
     <Compile Include="Factories\DownloadManagerFactory.cs" />
