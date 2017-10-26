@@ -10,6 +10,7 @@ namespace FileDownloader.IntegrationTests.Downloaders
     public class FtpDownloaderTest
     {
         private readonly Uri _url = new Uri(ConfigurationManager.AppSettings["ftpTestSource"]);
+        private readonly long _expectedFileSize = Convert.ToInt64(ConfigurationManager.AppSettings["ftpTestSourceSizeInKb"]);
         private string _destinationPath = @"C:\TestDownloadedFiles";
         private string _fileName = "agoda.jpg";
         private FtpDownloader _ftpDownloader;
@@ -36,6 +37,11 @@ namespace FileDownloader.IntegrationTests.Downloaders
             _ftpDownloader.StartDownload(_fileStream, _url);
 
             Assert.True(File.Exists(FullFileName), "File wasn't downloaded");
+
+            var fileInfo = new FileInfo(FullFileName);
+            var fileSize = fileInfo.Length / 1024;
+
+            Assert.AreEqual(_expectedFileSize, fileSize, $"Downloaded file size should be {_expectedFileSize}");
 
             File.Delete(FullFileName);
         }

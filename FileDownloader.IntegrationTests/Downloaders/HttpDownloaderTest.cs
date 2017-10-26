@@ -10,6 +10,7 @@ namespace FileDownloader.IntegrationTests.Downloaders
     public class HttpDownloaderTest
     {
         private readonly Uri _url = new Uri(ConfigurationManager.AppSettings["httpTestSource"]);
+        private readonly long _expectedFileSize = Convert.ToInt64(ConfigurationManager.AppSettings["httpTestSourceSizeInKb"]);
         private string _destinationPath = @"C:\TestDownloadedFiles";
         private string _fileName = "agoda.jpg";
         private HttpDownloader _httpDownloader;
@@ -36,6 +37,11 @@ namespace FileDownloader.IntegrationTests.Downloaders
             _httpDownloader.StartDownload(_fileStream, _url);
 
             Assert.True(File.Exists(FullFileName), "File wasn't downloaded");
+
+            var fileInfo = new FileInfo(FullFileName);
+            var fileSize = fileInfo.Length / 1024;
+
+            Assert.AreEqual(_expectedFileSize, fileSize, $"Downloaded file size should be {_expectedFileSize}");
 
             File.Delete(FullFileName);
         }
