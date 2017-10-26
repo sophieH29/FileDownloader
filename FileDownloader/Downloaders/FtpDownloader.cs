@@ -18,7 +18,7 @@ namespace FileDownloader.Downloaders
         public void Download(Stream fileStream, Uri url)
         {
             Console.WriteLine("Preparing download..");
-            var networkStream = CreateNetworkStream(url, BytesRead);
+            var networkStream = CreateNetworkStream(url, fileStream.Position);
 
             try
             {
@@ -38,9 +38,9 @@ namespace FileDownloader.Downloaders
         /// <param name="url">Resource url</param>
         /// <param name="bytesRead">Bytes already read</param>
         /// <returns>Network stream</returns>
-        private Stream CreateNetworkStream(Uri url, int bytesRead)
+        protected virtual Stream CreateNetworkStream(Uri url, long bytesRead)
         {
-            FtpWebRequest request = CreateFtpWebRequest(url, true);
+            FtpWebRequest request = CreateFtpWebRequest(url);
             request.Method = WebRequestMethods.Ftp.DownloadFile;
             if (bytesRead > 0)  request.ContentOffset = bytesRead;
 
@@ -49,15 +49,20 @@ namespace FileDownloader.Downloaders
             if (bytesRead == 0)
             {
                 Size = (int)response.ContentLength;
-                SizeInKb = Size / 1024;
-                Console.WriteLine($"Size in kb is {SizeInKb}");
+                var sizeInKb = Size / 1024;
+                Console.WriteLine($"Size in kb is {sizeInKb}");
             }
 
             //create network stream
             return response.GetResponseStream();
         }
 
-        private FtpWebRequest CreateFtpWebRequest(Uri ftpDirectoryPath, bool keepAlive = false)
+        /// <summary>
+        /// Creates FTP web request
+        /// </summary>
+        /// <param name="ftpDirectoryPath">FTP directory path</param>
+        /// <returns>FTP web request</returns>
+        private FtpWebRequest CreateFtpWebRequest(Uri ftpDirectoryPath)
         {
             var userName = ConfigurationManager.AppSettings["ftpUserName"];
             var password = ConfigurationManager.AppSettings["ftpPassword"];
@@ -68,7 +73,7 @@ namespace FileDownloader.Downloaders
             request.Proxy = null;
             request.UsePassive = true;
             request.UseBinary = true;
-            request.KeepAlive = keepAlive;
+            request.KeepAlive = true;
 
             request.Credentials = new NetworkCredential(userName, password);
 

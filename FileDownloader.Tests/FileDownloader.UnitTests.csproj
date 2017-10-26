@@ -53,12 +53,17 @@
     <Reference Include="nunit.framework, Version=3.8.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Downloaders\FtpDownloaderTest.cs" />
     <Compile Include="Downloaders\HttpDownloaderTest.cs" />
+    <Compile Include="Downloaders\SftpDownloaderTest.cs" />
     <Compile Include="Factories\DownloadManagerFactoryTest.cs" />
     <Compile Include="Managers\SimpleDownloadManagerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

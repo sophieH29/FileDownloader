@@ -49,13 +49,13 @@ namespace FileDownloader.Downloaders
 
                 using (var sourceStream = client.Open(url.LocalPath, FileMode.Open))
                 {
-                    if (BytesRead > 0) sourceStream.Seek(BytesRead, SeekOrigin.Begin);
+                    if (fileStream.Position > 0) sourceStream.Seek(fileStream.Position, SeekOrigin.Begin);
 
-                    if (BytesRead == 0)
+                    if (fileStream.Position == 0)
                     {
                         Size = (int)sourceStream.Length;
-                        SizeInKb = Size / 1024;
-                        Console.WriteLine($"Size in kb is {SizeInKb}");
+                        var sizeInKb = Size / 1024;
+                        Console.WriteLine($"Size in kb is {sizeInKb}");
                     }
 
                     DoDownload(fileStream, sourceStream);

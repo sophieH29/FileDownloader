@@ -18,7 +18,7 @@ namespace FileDownloader.Downloaders
         public void Download(Stream fileStream, Uri url)
         {
             Console.WriteLine("Preparing download..");
-            var networkStream = CreateNetworkStream(url, BytesRead);
+            var networkStream = CreateNetworkStream(url, fileStream.Position);
 
             try
             {
@@ -38,21 +38,21 @@ namespace FileDownloader.Downloaders
         /// <param name="url">Resource url</param>
         /// <param name="bytesRead">Bytes already read</param>
         /// <returns>Network stream</returns>
-        protected virtual Stream CreateNetworkStream(Uri url, int bytesRead)
+        protected virtual Stream CreateNetworkStream(Uri url, long bytesRead)
         {
             Console.WriteLine("Creating network stream...");
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
 
-            if (bytesRead > 0) request.AddRange(BytesRead);
+            if (bytesRead > 0) request.AddRange(bytesRead);
 
             WebResponse response = request.GetResponse();
 
             if (bytesRead == 0)
             {
                 Size = (int)response.ContentLength;
-                SizeInKb = Size / 1024;
-                Console.WriteLine($"Size in kb is {SizeInKb}");
+                var sizeInKb = Size / 1024;
+                Console.WriteLine($"Size in kb is {sizeInKb}");
             }
 
             //create network stream
