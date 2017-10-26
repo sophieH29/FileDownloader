@@ -10,14 +10,12 @@ namespace FileDownloader.Downloaders
     /// </summary>
     public class FtpDownloader : BaseDownloader, IDownloader
     {
-
         /// <summary>
         /// Download resource
         /// </summary>
         /// <param name="fileStream">File stream where downloaded bytes will be written</param>
         /// <param name="url">Url of resource to download</param>
-        /// <param name="retry">true, if it is retry</param>
-        public void Download(Stream fileStream, Uri url, bool retry = false)
+        public void Download(Stream fileStream, Uri url)
         {
             Console.WriteLine("Preparing download..");
             var networkStream = CreateNetworkStream(url, BytesRead);
@@ -39,9 +37,8 @@ namespace FileDownloader.Downloaders
         /// </summary>
         /// <param name="url">Resource url</param>
         /// <param name="bytesRead">Bytes already read</param>
-        /// <param name="retry">true, if it is retry</param>
         /// <returns>Network stream</returns>
-        private Stream CreateNetworkStream(Uri url, int bytesRead, bool retry = false)
+        private Stream CreateNetworkStream(Uri url, int bytesRead)
         {
             FtpWebRequest request = CreateFtpWebRequest(url, true);
             request.Method = WebRequestMethods.Ftp.DownloadFile;
@@ -49,7 +46,7 @@ namespace FileDownloader.Downloaders
 
             WebResponse response = request.GetResponse();
 
-            if (!retry)
+            if (bytesRead == 0)
             {
                 Size = (int)response.ContentLength;
                 SizeInKb = Size / 1024;

@@ -32,7 +32,7 @@ namespace FileDownloader.Downloaders
         /// </summary>
         /// <param name="fileStream">File stream where to write bytes</param>
         /// <param name="networkStream">Network stream from where to get bytes</param>
-        protected void DoDownload(Stream fileStream, Stream networkStream)
+        protected virtual void DoDownload(Stream fileStream, Stream networkStream)
         {
             byte[] buffer = new byte[10240];
             BytesToRead = Size;

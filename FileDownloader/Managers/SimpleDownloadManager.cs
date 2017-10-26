@@ -17,11 +17,6 @@ namespace FileDownloader.Managers
         private string _fileName;
 
         /// <summary>
-        /// File stream for downloading
-        /// </summary>
-        private Stream _fileStream;
-
-        /// <summary>
         /// Defines file system
         /// </summary>
         private readonly IFileSystem _fileSystem;
@@ -35,11 +30,6 @@ namespace FileDownloader.Managers
         /// Resource that needs to be downloaded
         /// </summary>
         private readonly Uri _sourceUrl;
-
-        /// <summary>
-        /// true, if it is retry
-        /// </summary>
-        private bool _retry;
 
         /// <summary>
         /// Max count of downloads retries
@@ -77,9 +67,9 @@ namespace FileDownloader.Managers
                 _fileName = _fileSystem.GenerateFileName(_fileName);
                 _fileSystem.PrepareDirectory(_fileName);
 
-                _fileStream = _fileSystem.CreateStream(_fileName);
+                var fileStream = _fileSystem.CreateStream(_fileName);
 
-                WithRetry(() => _downloader.Download(_fileStream, _sourceUrl, _retry));
+                WithRetry(() => _downloader.Download(fileStream, _sourceUrl));
 
                 return _fileName;
 
@@ -91,9 +81,6 @@ namespace FileDownloader.Managers
                 return null;
             }
         }
-
-
-
 
         /// <summary>
         /// Retries of execute downloading of specified amount of times
@@ -115,12 +102,10 @@ namespace FileDownloader.Managers
                     if (tryCount < _maxRetry)
                     {
                         tryCount++;
-                        _retry = true;
                         Console.WriteLine($"Retry #{tryCount} downloading...");
                     }
                     else
                     {
-                        _retry = false;
                         throw;
                     }
                 }

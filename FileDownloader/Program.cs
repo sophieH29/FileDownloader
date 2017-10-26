@@ -12,11 +12,6 @@ namespace FileDownloader
         /// </summary>
         private const int DefaultMaxRetryCount = 10;
 
-        /// <summary>
-        /// Max count of retries
-        /// </summary>
-        private byte _maxRetry;
-
         static void Main(string[] args)
         {
             string[] filesSources;
@@ -37,9 +32,7 @@ namespace FileDownloader
                 return;
             }
 
-            byte maxRetry;
-
-            if (!byte.TryParse(ConfigurationManager.AppSettings["maxRetryCount"], out maxRetry))
+            if (!byte.TryParse(ConfigurationManager.AppSettings["maxRetryCount"], out var maxRetry))
             {
                 maxRetry = DefaultMaxRetryCount;
             }

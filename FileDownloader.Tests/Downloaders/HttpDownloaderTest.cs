@@ -12,30 +12,26 @@ namespace FileDownloader.Tests.Downloaders
     {
         private Mock<HttpDownloader> _httpDownloader;
         private Mock<Stream> _fileStream;
-        private Uri Url => new Uri("http://ahdzbook.com/data/out/240/hdwp694087183.jpg");
+        private Mock<Stream> _networkStream;
+        private readonly Uri _url = new Uri("http://aaaa/bb.jpg");
 
         [SetUp]
         public void Setup()
         {
             _httpDownloader = new Mock<HttpDownloader> {CallBase = true};
             _fileStream = new Mock<Stream>();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            
+            _networkStream = new Mock<Stream>();
         }
 
         [Test]
-        public void VerifyStartDownloader()
+        public void HttpDownloader_DownloadMethod()
         {
-            _httpDownloader.Protected().Setup("WithRetry", It.IsAny<Action>())
-                .Callback<Action>(action => action());
-            _httpDownloader.Protected().Setup("Download", It.IsAny<Stream>(), It.IsAny<Uri>()).Verifiable();
+            _httpDownloader.Protected().Setup<Stream>("CreateNetworkStream", _url, ItExpr.IsAny<int>(), false).Returns(_networkStream.Object);
+            _fileStream.Setup(stream => stream.SetLength(It.IsAny<long>())).Verifiable();
 
-            
-            //_fileStream.Setup(stream => stream.SetLength())
-            _httpDownloader.Object.Download(_fileStream.Object, Url);
-        }}
+            _httpDownloader.Protected().Setup("DoDownload", _fileStream.Object, _networkStream.Object).Verifiable();
+
+            _httpDownloader.Object.Download(_fileStream.Object, _url);
+        }
+    }
 }

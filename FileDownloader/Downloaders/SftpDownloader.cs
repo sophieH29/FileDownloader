@@ -41,8 +41,7 @@ namespace FileDownloader.Downloaders
         /// </summary>
         /// <param name="fileStream">File stream where downloaded bytes will be written</param>
         /// <param name="url">Url of resource to download</param>
-        /// <param name="retry">true, if it is retry</param>
-        public void Download(Stream fileStream, Uri url, bool retry = false)
+        public void Download(Stream fileStream, Uri url)
         {
             using (var client = new SftpClient(_host, _username, _password))
             {
@@ -52,7 +51,7 @@ namespace FileDownloader.Downloaders
                 {
                     if (BytesRead > 0) sourceStream.Seek(BytesRead, SeekOrigin.Begin);
 
-                    if (!retry)
+                    if (BytesRead == 0)
                     {
                         Size = (int)sourceStream.Length;
                         SizeInKb = Size / 1024;

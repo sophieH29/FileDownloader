@@ -13,7 +13,6 @@ namespace FileDownloader.Downloaders
         /// </summary>
         /// <param name="fileStream">File stream where downloaded bytes will be written</param>
         /// <param name="url">Url of resource to download</param>
-        /// <param name="retry">true, if it is retry</param>
-        void Download(Stream fileStream, Uri url, bool retry = false);
+        void Download(Stream fileStream, Uri url);
     }
 }
