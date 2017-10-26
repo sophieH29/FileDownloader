@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using System.Net;
 
@@ -12,33 +11,12 @@ namespace FileDownloader.Downloaders
     public class HttpDownloader : BaseDownloader, IDownloader
     {
         /// <summary>
-        /// Initiates HTTP(s) Downloader with defined maximum retries count
-        /// </summary>
-        public HttpDownloader()
-        {
-            if (!byte.TryParse(ConfigurationManager.AppSettings["httpRetryCount"], out MaxRetry))
-            {
-                MaxRetry = 10;
-            }
-            
-        }
-        
-        /// <summary>
-        /// StartDownload resource
-        /// </summary>
-        /// <param name="fileStream">File stream where downloaded bytes will be written</param>
-        /// <param name="url">Url of resource to download</param>
-        public void StartDownload(Stream fileStream, Uri url)
-        {
-            WithRetry(() => Download(fileStream, url));
-        }
-
-        /// <summary>
         /// Download resource
         /// </summary>
         /// <param name="fileStream">File stream where downloaded bytes will be written</param>
         /// <param name="url">Url of resource to download</param>
-        protected override void Download(Stream fileStream, Uri url)
+        /// <param name="retry">true, if it is retry</param>
+        public void Download(Stream fileStream, Uri url, bool retry = false)
         {
             Console.WriteLine("Preparing download..");
             var networkStream = CreateNetworkStream(url, BytesRead);
@@ -60,8 +38,9 @@ namespace FileDownloader.Downloaders
         /// </summary>
         /// <param name="url">Resource url</param>
         /// <param name="bytesRead">Bytes already read</param>
+        /// <param name="retry">true, if it is retry</param>
         /// <returns>Network stream</returns>
-        private Stream CreateNetworkStream(Uri url, int bytesRead)
+        private Stream CreateNetworkStream(Uri url, int bytesRead, bool retry = false)
         {
             Console.WriteLine("Creating network stream...");
 
@@ -71,7 +50,7 @@ namespace FileDownloader.Downloaders
 
             WebResponse response = request.GetResponse();
 
-            if (!Retry)
+            if (!retry)
             {
                 Size = (int)response.ContentLength;
                 SizeInKb = Size / 1024;

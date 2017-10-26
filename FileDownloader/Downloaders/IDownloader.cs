@@ -9,10 +9,11 @@ namespace FileDownloader.Downloaders
     public interface IDownloader
     {
         /// <summary>
-        /// StartDownload resource
+        /// Download resource
         /// </summary>
         /// <param name="fileStream">File stream where downloaded bytes will be written</param>
         /// <param name="url">Url of resource to download</param>
-        void StartDownload(Stream fileStream, Uri url);
+        /// <param name="retry">true, if it is retry</param>
+        void Download(Stream fileStream, Uri url, bool retry = false);
     }
 }

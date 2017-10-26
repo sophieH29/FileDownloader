@@ -11,38 +11,29 @@ namespace FileDownloader.Downloaders
     /// </summary>
     public class SftpDownloader : BaseDownloader, IDownloader
     {
-        private SftpClient _client;
+        /// <summary>
+        /// Host of SFTP connection
+        /// </summary>
+        private readonly string _host;
+
+        /// <summary>
+        /// Username of SFTP connection
+        /// </summary>
+        private readonly string _username;
+
+        /// <summary>
+        /// Password of SFTP connection
+        /// </summary>
+        private readonly string _password;
 
         /// <summary>
         /// Initiates SFTP Downloader with defined maximum retries count
         /// </summary>
         public SftpDownloader()
         {
-            if (!byte.TryParse(ConfigurationManager.AppSettings["sftpRetryCount"], out MaxRetry))
-            {
-                MaxRetry = 10;
-            }
-        }
-
-        /// <summary>
-        /// StartDownload resource
-        /// </summary>
-        /// <param name="fileStream">File stream where downloaded bytes will be written</param>
-        /// <param name="url">Url of resource to download</param>
-        public void StartDownload(Stream fileStream, Uri url)
-        {
-            string host = ConfigurationManager.AppSettings["sftpHost"];
-            string username = ConfigurationManager.AppSettings["sftpUserName"];
-            string password = ConfigurationManager.AppSettings["sftpPassword"];
-
-            using (_client = new SftpClient(host, username, password))
-            {
-                _client.Connect();
-
-                WithRetry(() => Download(fileStream, url));
-
-                _client.Disconnect();
-            }
+            _host = ConfigurationManager.AppSettings["sftpHost"];
+            _username = ConfigurationManager.AppSettings["sftpUserName"];
+            _password = ConfigurationManager.AppSettings["sftpPassword"];
         }
 
         /// <summary>
@@ -50,20 +41,29 @@ namespace FileDownloader.Downloaders
         /// </summary>
         /// <param name="fileStream">File stream where downloaded bytes will be written</param>
         /// <param name="url">Url of resource to download</param>
-        protected override void Download(Stream fileStream, Uri url)
+        /// <param name="retry">true, if it is retry</param>
+        public void Download(Stream fileStream, Uri url, bool retry = false)
         {
-            using (var sourceStream = _client.Open(url.LocalPath, FileMode.Open))
+            using (var client = new SftpClient(_host, _username, _password))
             {
-                if(BytesRead > 0) sourceStream.Seek(BytesRead, SeekOrigin.Begin);
+                client.Connect();
 
-                if (!Retry)
+                using (var sourceStream = client.Open(url.LocalPath, FileMode.Open))
                 {
-                    Size = (int)sourceStream.Length;
-                    SizeInKb = Size / 1024;
-                    Console.WriteLine($"Size in kb is {SizeInKb}");
+                    if (BytesRead > 0) sourceStream.Seek(BytesRead, SeekOrigin.Begin);
+
+                    if (!retry)
+                    {
+                        Size = (int)sourceStream.Length;
+                        SizeInKb = Size / 1024;
+                        Console.WriteLine($"Size in kb is {SizeInKb}");
+                    }
+
+                    DoDownload(fileStream, sourceStream);
                 }
 
-                DoDownload(fileStream, sourceStream);
+                client.Disconnect();
             }
-        }}
+        }
+    }
 }

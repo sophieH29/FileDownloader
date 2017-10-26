@@ -11,13 +11,40 @@ namespace FileDownloader.Managers
     /// </summary>
     public class SimpleDownloadManager : IDownloadManager
     {
-
+        /// <summary>
+        /// File name that will be used for downloaded resource
+        /// </summary>
         private string _fileName;
+
+        /// <summary>
+        /// File stream for downloading
+        /// </summary>
         private Stream _fileStream;
 
+        /// <summary>
+        /// Defines file system
+        /// </summary>
         private readonly IFileSystem _fileSystem;
+
+        /// <summary>
+        /// Defines downloader that will be used for specific resource download
+        /// </summary>
         private readonly IDownloader _downloader;
+
+        /// <summary>
+        /// Resource that needs to be downloaded
+        /// </summary>
         private readonly Uri _sourceUrl;
+
+        /// <summary>
+        /// true, if it is retry
+        /// </summary>
+        private bool _retry;
+
+        /// <summary>
+        /// Max count of downloads retries
+        /// </summary>
+        private readonly byte _maxRetry;
 
         /// <summary>
         /// Creates instance of SimpleDownloadManager
@@ -25,14 +52,17 @@ namespace FileDownloader.Managers
         /// <param name="fileSystem">File system to use for file managing</param>
         /// <param name="downloader">Downloader to use for file downloading</param>
         /// <param name="sourceUrl">Source url to download</param>
+        /// <param name="maxRetry">Max retries of downloads</param>
         public SimpleDownloadManager(IFileSystem fileSystem,
                                         IDownloader downloader,
-                                        Uri sourceUrl) {
+                                        Uri sourceUrl,
+                                        byte maxRetry) {
             _fileSystem = fileSystem;
             _downloader = downloader;
             _sourceUrl = sourceUrl;
             _fileName = Path.GetFileName(_sourceUrl.LocalPath);
-        }
+            _maxRetry = maxRetry;
+                                        }
 
         /// <summary>
         /// StartDownload resource
@@ -48,7 +78,8 @@ namespace FileDownloader.Managers
                 _fileSystem.PrepareDirectory(_fileName);
 
                 _fileStream = _fileSystem.CreateStream(_fileName);
-                _downloader.StartDownload(_fileStream, _sourceUrl);
+
+                WithRetry(() => _downloader.Download(_fileStream, _sourceUrl, _retry));
 
                 return _fileName;
 
@@ -59,6 +90,42 @@ namespace FileDownloader.Managers
                 _fileSystem.DeleteFile(_fileName);
                 return null;
             }
+        }
+
+
+
+
+        /// <summary>
+        /// Retries of execute downloading of specified amount of times
+        /// </summary>
+        /// <param name="method">Method to execute</param>
+        protected virtual void WithRetry(Action method)
+        {
+            int tryCount = 0;
+            bool done = false;
+            do
+            {
+                try
+                {
+                    method();
+                    done = true;
+                }
+                catch (Exception)
+                {
+                    if (tryCount < _maxRetry)
+                    {
+                        tryCount++;
+                        _retry = true;
+                        Console.WriteLine($"Retry #{tryCount} downloading...");
+                    }
+                    else
+                    {
+                        _retry = false;
+                        throw;
+                    }
+                }
+            }
+            while (!done);
         }
     }
 }

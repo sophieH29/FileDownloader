@@ -5,7 +5,7 @@ namespace FileDownloader.FileSystems
 {
     /// <summary>
     /// Defines Amazon storage file system
-    /// TODO: Implement all the methods.
+    /// TODO: Implement if we need Amazon storage for saving downloaded files. Was created as an example of expanding capabilities
     /// </summary>
     public class AwsS3FileSystem : IFileSystem
     {

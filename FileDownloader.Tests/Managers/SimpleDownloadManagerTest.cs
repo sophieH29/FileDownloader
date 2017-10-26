@@ -16,6 +16,7 @@ namespace FileDownloader.Tests.Managers
         private Uri Url => new Uri("http://ahdzbook.com/data/out/240/hdwp694087183.jpg");
         private const string FileName = "hdwp694087183.jpg";
         private Stream _fileStream;
+        private readonly byte _maxRetryCount = 10;
 
         [SetUp]
         public void Setup()
@@ -41,9 +42,9 @@ namespace FileDownloader.Tests.Managers
             _fileSystemMock.Setup(fileSystem => fileSystem.GenerateFileName(FileName)).Returns(FileName);
             _fileSystemMock.Setup(fileSystem => fileSystem.PrepareDirectory(FileName)).Verifiable();
             _fileSystemMock.Setup(fileSystem => fileSystem.CreateStream(FileName)).Returns(_fileStream);
-            _downloaderMock.Setup(downloader => downloader.StartDownload(_fileStream, Url)).Verifiable();
+            _downloaderMock.Setup(downloader => downloader.Download(_fileStream, Url, false)).Verifiable();
             
-            var simpleDownloadManager = new SimpleDownloadManager(_fileSystemMock.Object, _downloaderMock.Object, Url);
+            var simpleDownloadManager = new SimpleDownloadManager(_fileSystemMock.Object, _downloaderMock.Object, Url, _maxRetryCount);
             var fileName = simpleDownloadManager.DownloadFile();
 
             Assert.AreEqual(FileName, fileName, $"Downloaded file should be equal {FileName}");

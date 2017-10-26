@@ -49,19 +49,20 @@ namespace FileDownloader.Factories
         /// Creates instance of specific StartDownload manager based on parameters
         /// </summary>
         /// <param name="url">File source to download</param>
+        /// <param name="maxRetry">Max retry count</param>
         /// <returns>instance of IDownloadManager</returns>
-        public IDownloadManager GetDownloadManager(string url)
+        public IDownloadManager GetDownloadManager(string url, byte maxRetry)
         {
             Uri uri;
             if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
             {
                 return null;
             }
-           
+
             var protocol = uri.Scheme;
             IDownloader downloader = GetDownloader(protocol);
 
-            return downloader != null ? new SimpleDownloadManager(GetFileSystem(), downloader, uri) : null;
+            return downloader != null ? new SimpleDownloadManager(GetFileSystem(), downloader, uri, maxRetry) : null;
         }
 
         /// <summary>

@@ -36,6 +36,6 @@ namespace FileDownloader.Tests.Downloaders
 
             
             //_fileStream.Setup(stream => stream.SetLength())
-            _httpDownloader.Object.StartDownload(_fileStream.Object, Url);
+            _httpDownloader.Object.Download(_fileStream.Object, Url);
         }}
 }

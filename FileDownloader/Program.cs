@@ -7,7 +7,15 @@ namespace FileDownloader
 {
     class Program
     {
-        public static string DestinationPath { get; set; }
+        /// <summary>
+        /// Default numbers of retries
+        /// </summary>
+        private const int DefaultMaxRetryCount = 10;
+
+        /// <summary>
+        /// Max count of retries
+        /// </summary>
+        private byte _maxRetry;
 
         static void Main(string[] args)
         {
@@ -29,11 +37,18 @@ namespace FileDownloader
                 return;
             }
 
+            byte maxRetry;
+
+            if (!byte.TryParse(ConfigurationManager.AppSettings["maxRetryCount"], out maxRetry))
+            {
+                maxRetry = DefaultMaxRetryCount;
+            }
+
             foreach (var sourceUrl in filesSources)
             {
                 Console.WriteLine();
                 Console.WriteLine($"Starting download of {sourceUrl}");
-                IDownloadManager downloadManager = DownloadManagerFactory.GetInstance().GetDownloadManager(sourceUrl);
+                IDownloadManager downloadManager = DownloadManagerFactory.GetInstance().GetDownloadManager(sourceUrl, maxRetry);
 
                 string downloadedFileName = downloadManager.DownloadFile();
 

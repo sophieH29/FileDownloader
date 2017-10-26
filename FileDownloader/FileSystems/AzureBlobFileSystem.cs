@@ -2,10 +2,10 @@
 using System.IO;
 
 namespace FileDownloader.FileSystems
-{ 
+{
     /// <summary>
     /// Defines Azure storage file system
-    /// TODO: Implement all the methods.
+    /// TODO: Implement if we need Azure storage for saving downloaded files. Was created as an example of expanding capabilities
     /// </summary>
     public class AzureBlobFileSystem : IFileSystem
     {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using FileDownloader.Downloaders;
 using FileDownloader.Factories;
 using NUnit.Framework;
 
@@ -11,6 +10,7 @@ namespace FileDownloader.Tests.Factories
 		private DownloadManagerFactory _factory;
 		private List<string> _successfulSources;
 		private string _unsucessfulSource;
+	    private byte _maxRetryCount = 10;
 
 		[SetUp]
 		public void SetUp()
@@ -29,7 +29,7 @@ namespace FileDownloader.Tests.Factories
 		[Test]
 		public void GetDownloadManager_NullExpected()
 		{
-			var type = _factory.GetDownloadManager(_unsucessfulSource);
+			var type = _factory.GetDownloadManager(_unsucessfulSource, _maxRetryCount);
 			Assert.IsNull(type);
 		}
 
@@ -38,7 +38,7 @@ namespace FileDownloader.Tests.Factories
 		{
 			foreach (var source in _successfulSources)
 			{
-				var type = _factory.GetDownloadManager(source);
+				var type = _factory.GetDownloadManager(source, _maxRetryCount);
 				Assert.IsNotNull(type);
 			}
 		}

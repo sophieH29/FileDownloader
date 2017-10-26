@@ -34,7 +34,7 @@ namespace FileDownloader.IntegrationTests.Downloaders
         [Test]
         public void VerifyDwonload()
         {
-            _httpDownloader.StartDownload(_fileStream, _url);
+            _httpDownloader.Download(_fileStream, _url);
 
             Assert.True(File.Exists(FullFileName), "File wasn't downloaded");
 

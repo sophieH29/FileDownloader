@@ -34,7 +34,7 @@ namespace FileDownloader.IntegrationTests.Downloaders
         [Test]
         public void VerifyDwonload()
         {
-            _ftpDownloader.StartDownload(_fileStream, _url);
+            _ftpDownloader.Download(_fileStream, _url);
 
             Assert.True(File.Exists(FullFileName), "File wasn't downloaded");
 
