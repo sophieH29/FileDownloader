@@ -3,6 +3,9 @@ using Renci.SshNet;
 
 namespace FileDownloader.Downloaders
 {
+    /// <summary>
+    /// SFTP Client wrapper
+    /// </summary>
     public class SftpClientWrapper: SftpClient, ISftpClientWrapper
     {
         public SftpClientWrapper(ConnectionInfo connectionInfo) : base(connectionInfo)
@@ -25,17 +28,29 @@ namespace FileDownloader.Downloaders
         {
         }
 
-        public Stream CreateStream(string path, FileMode fileMode)
+        /// <summary>
+        /// Creates SFTP stream
+        /// </summary>
+        /// <param name="path">Directory path</param>
+        /// <param name="fileMode">File mode</param>
+        /// <returns>Stream</returns>
+        public virtual Stream CreateStream(string path, FileMode fileMode)
         {
             return Open(path, fileMode);
         }
 
-        public void ConnectClient()
+        /// <summary>
+        /// Connects client
+        /// </summary>
+        public virtual void ConnectClient()
         {
             Connect();
         }
 
-        public void DisconnectClient()
+        /// <summary>
+        /// Disconnects client
+        /// </summary>
+        public virtual void DisconnectClient()
         {
             Disconnect();
         }

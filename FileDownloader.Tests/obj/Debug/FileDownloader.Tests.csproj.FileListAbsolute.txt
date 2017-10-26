@@ -1,0 +1,13 @@
+D:\Projects\FileDownloader\FileDownloader.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+D:\Projects\FileDownloader\FileDownloader.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+D:\Projects\FileDownloader\FileDownloader.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+D:\Projects\FileDownloader\FileDownloader.Tests\bin\Debug\FileDownloader.Tests.dll
+D:\Projects\FileDownloader\FileDownloader.Tests\bin\Debug\FileDownloader.Tests.pdb
+D:\Projects\FileDownloader\FileDownloader.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+D:\Projects\FileDownloader\FileDownloader.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+D:\Projects\FileDownloader\FileDownloader.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+D:\Projects\FileDownloader\FileDownloader.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+D:\Projects\FileDownloader\FileDownloader.Tests\obj\Debug\FileDownloader.Tests.csprojResolveAssemblyReference.cache
+D:\Projects\FileDownloader\FileDownloader.Tests\obj\Debug\FileDownloader.Tests.csproj.CoreCompileInputs.cache
+D:\Projects\FileDownloader\FileDownloader.Tests\obj\Debug\FileDownloader.Tests.dll
+D:\Projects\FileDownloader\FileDownloader.Tests\obj\Debug\FileDownloader.Tests.pdb

@@ -14,9 +14,8 @@ namespace FileDownloader.Tests.Downloaders
     {
         private Mock<SftpDownloader> _sftpDownloader;
         private Mock<Stream> _fileStream;
-        private Mock<ISftpClientWrapper> _sftpClientMock;
-        private Mock<SftpClientWrapper> _sftpClient;
-        private Mock<SftpFileStream> _sftpFileStream;
+        private Mock<SftpClientWrapper> _sftpClientMock;
+        private Mock<Stream> _sftpFileStream;
         private readonly Uri _url = new Uri("http://aaaa/bb.jpg");
 
         [SetUp]
@@ -26,11 +25,10 @@ namespace FileDownloader.Tests.Downloaders
             ConfigurationManager.AppSettings["sftpUserName"] = "sftpUserName";
             ConfigurationManager.AppSettings["sftpPassword"] = "sftpPassword";
 
-            _sftpDownloader = new Mock<SftpDownloader> { CallBase = true };
+            _sftpDownloader = new Mock<SftpDownloader>();
             _fileStream = new Mock<Stream>();
-            _sftpFileStream = new Mock<SftpFileStream>();
-            _sftpClientMock = new Mock<ISftpClientWrapper>();
-            _sftpClient = new Mock<SftpClientWrapper>("sftpHost", "sftpUserName", "sftpPassword") { CallBase = true };
+            _sftpFileStream = new Mock<Stream>();
+            _sftpClientMock = new Mock<SftpClientWrapper>("sftpHost", "sftpUserName", "sftpPassword");
         }
 
         [Test]

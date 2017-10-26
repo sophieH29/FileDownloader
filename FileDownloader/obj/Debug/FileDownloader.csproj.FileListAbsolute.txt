@@ -1,0 +1,13 @@
+D:\Projects\FileDownloader\FileDownloader\bin\Debug\FileDownloader.exe.config
+D:\Projects\FileDownloader\FileDownloader\bin\Debug\FileDownloader.exe
+D:\Projects\FileDownloader\FileDownloader\bin\Debug\FileDownloader.pdb
+D:\Projects\FileDownloader\FileDownloader\bin\Debug\Renci.SshNet.dll
+D:\Projects\FileDownloader\FileDownloader\bin\Debug\Renci.SshNet.xml
+D:\Projects\FileDownloader\FileDownloader\obj\Debug\FileDownloader.csproj.CoreCompileInputs.cache
+D:\Projects\FileDownloader\FileDownloader\obj\Debug\FileDownloader.exe
+D:\Projects\FileDownloader\FileDownloader\obj\Debug\FileDownloader.pdb
+D:\Projects\FileDownloader\FileDownloader\bin\Debug\Castle.Core.dll
+D:\Projects\FileDownloader\FileDownloader\bin\Debug\Moq.dll
+D:\Projects\FileDownloader\FileDownloader\bin\Debug\Castle.Core.xml
+D:\Projects\FileDownloader\FileDownloader\bin\Debug\Moq.pdb
+D:\Projects\FileDownloader\FileDownloader\bin\Debug\Moq.xml
